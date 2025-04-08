@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function() {
     // Global variables
     let selectedMovie = null;
@@ -37,44 +38,97 @@ document.addEventListener('DOMContentLoaded', function() {
     const authForms = document.querySelectorAll('.auth-form');
     const togglePasswordButtons = document.querySelectorAll('.toggle-password');
     const signUpPasswordInput = document.getElementById('signUpPassword');
+    const sliderNavButtons = document.querySelectorAll('.slider-nav');
+    const navLinks = document.querySelectorAll('.nav-link');
+    const bookNowBtn = document.getElementById('bookNowBtn');
 
-    // Search functionality
-    searchInput.addEventListener('input', function() {
-        const searchTerm = this.value.toLowerCase();
-        
-        movieCards.forEach(card => {
-            const title = card.querySelector('h3').textContent.toLowerCase();
-            const info = card.querySelector('p').textContent.toLowerCase();
-            
-            if (title.includes(searchTerm) || info.includes(searchTerm)) {
-                card.style.display = 'block';
-            } else {
-                card.style.display = 'none';
+    // Navigation links functionality
+    navLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = this.getAttribute('href').substring(1); // Remove the # from the href
+            const section = document.getElementById(target);
+            if (section) {
+                window.scrollTo({
+                    top: section.offsetTop - 100,
+                    behavior: 'smooth'
+                });
             }
         });
     });
 
+    // Book now button functionality
+    if (bookNowBtn) {
+        bookNowBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const nowShowing = document.getElementById('now-showing');
+            if (nowShowing) {
+                window.scrollTo({
+                    top: nowShowing.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    }
+
+    // Sign In button fix
+    if (signInBtn) {
+        signInBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (signInModal) {
+                signInModal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+        });
+    }
+
+    // Search functionality
+    if (searchInput) {
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            movieCards.forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                const info = card.querySelector('p').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || info.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+
     // Location functionality
-    locationBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        locationDropdown.style.display = locationDropdown.style.display === 'block' ? 'none' : 'block';
-    });
+    if (locationBtn) {
+        locationBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            locationDropdown.style.display = locationDropdown.style.display === 'block' ? 'none' : 'block';
+        });
+    }
     
     // Close location dropdown when clicking outside
     document.addEventListener('click', function() {
-        locationDropdown.style.display = 'none';
+        if (locationDropdown) {
+            locationDropdown.style.display = 'none';
+        }
     });
     
     // Prevent dropdown from closing when clicking inside it
-    locationDropdown.addEventListener('click', function(e) {
-        e.stopPropagation();
-    });
+    if (locationDropdown) {
+        locationDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    }
     
     // Location selection
     locationItems.forEach(item => {
         item.addEventListener('click', function() {
             currentLocation = this.getAttribute('data-location');
-            selectedLocationText.textContent = currentLocation;
+            if (selectedLocationText) {
+                selectedLocationText.textContent = currentLocation;
+            }
             locationDropdown.style.display = 'none';
         });
     });
@@ -144,10 +198,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Event listeners for opening modals
-    signInBtn.addEventListener('click', function() {
-        signInModal.style.display = 'block';
-        document.body.style.overflow = 'hidden';
-    });
+    if (signInBtn) {
+        signInBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            signInModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+    }
 
     // Book tickets buttons
     bookTicketButtons.forEach(button => {
@@ -340,108 +397,122 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Confirm payment button
-    confirmPaymentBtn.addEventListener('click', function() {
-        // Hide step 3 and show step 4
-        document.getElementById('step3').style.display = 'none';
-        document.getElementById('step4').style.display = 'block';
-        
-        // Update ticket information
-        updateTicketInfo();
-        
-        // Generate QR code for ticket
-        generateTicketQR();
-        
-        // Generate random booking ID
-        const bookingId = 'CIN' + Math.floor(Math.random() * 9000000 + 1000000);
-        document.getElementById('ticketBookingId').textContent = bookingId;
-        
-        // Scroll to top of modal
-        document.querySelector('.modal-content').scrollTop = 0;
-    });
+    if (confirmPaymentBtn) {
+        confirmPaymentBtn.addEventListener('click', function() {
+            // Hide step 3 and show step 4
+            document.getElementById('step3').style.display = 'none';
+            document.getElementById('step4').style.display = 'block';
+            
+            // Update ticket information
+            updateTicketInfo();
+            
+            // Generate QR code for ticket
+            generateTicketQR();
+            
+            // Generate random booking ID
+            const bookingId = 'CIN' + Math.floor(Math.random() * 9000000 + 1000000);
+            document.getElementById('ticketBookingId').textContent = bookingId;
+            
+            // Scroll to top of modal
+            document.querySelector('.modal-content').scrollTop = 0;
+        });
+    }
 
     // Download ticket button - adding download functionality
-    downloadTicketBtn.addEventListener('click', function() {
-        // Create a virtual canvas to generate the ticket image
-        const ticketElement = document.querySelector('.ticket');
-        
-        // Use html2canvas if available, or show an alert in this mock version
-        html2canvas(ticketElement).then(canvas => {
-            const ticketImage = canvas.toDataURL('image/png');
-            const downloadLink = document.createElement('a');
-            downloadLink.href = ticketImage;
-            downloadLink.download = `CineVerse_Ticket_${document.getElementById('ticketBookingId').textContent}.png`;
-            downloadLink.click();
-        }).catch(err => {
-            console.error("Couldn't generate ticket image:", err);
-            alert('Ticket downloaded successfully! Check your downloads folder.');
+    if (downloadTicketBtn) {
+        downloadTicketBtn.addEventListener('click', function() {
+            // Create a virtual canvas to generate the ticket image
+            const ticketElement = document.querySelector('.ticket');
+            
+            // Use html2canvas if available, or show an alert in this mock version
+            html2canvas(ticketElement).then(canvas => {
+                const ticketImage = canvas.toDataURL('image/png');
+                const downloadLink = document.createElement('a');
+                downloadLink.href = ticketImage;
+                downloadLink.download = `CineVerse_Ticket_${document.getElementById('ticketBookingId').textContent}.png`;
+                downloadLink.click();
+            }).catch(err => {
+                console.error("Couldn't generate ticket image:", err);
+                alert('Ticket downloaded successfully! Check your downloads folder.');
+            });
         });
-    });
+    }
 
     // Close ticket button
-    closeTicketBtn.addEventListener('click', function() {
-        bookingModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    });
+    if (closeTicketBtn) {
+        closeTicketBtn.addEventListener('click', function() {
+            bookingModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+    }
 
     // Coming soon slider navigation
-    sliderNavButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const slider = document.querySelector('.slider-container');
-            const scrollAmount = slider.clientWidth;
-            
-            if (this.classList.contains('prev')) {
-                slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            } else {
-                slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            }
+    if (sliderNavButtons) {
+        sliderNavButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                const slider = document.querySelector('.slider-container');
+                const scrollAmount = slider.clientWidth;
+                
+                if (this.classList.contains('prev')) {
+                    slider.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                } else {
+                    slider.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+                }
+            });
         });
-    });
+    }
 
     // Form Submissions with validation
-    document.querySelector('.sign-in-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const email = document.getElementById('signInEmail').value;
-        const password = document.getElementById('signInPassword').value;
-        
-        // Basic validation
-        if (!email || !password) {
-            alert('Please fill in all fields');
-            return;
-        }
-        
-        // Mock sign in (in a real app, this would call an API)
-        alert('Sign in successful!');
-        signInModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-        
-        // Update UI to show logged in state (simplified for this example)
-        signInBtn.textContent = 'My Account';
-    });
+    const signInForm = document.querySelector('.sign-in-form');
+    if (signInForm) {
+        signInForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('signInEmail').value;
+            const password = document.getElementById('signInPassword').value;
+            
+            // Basic validation
+            if (!email || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            // Mock sign in (in a real app, this would call an API)
+            alert('Sign in successful!');
+            signInModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+            
+            // Update UI to show logged in state (simplified for this example)
+            signInBtn.textContent = 'My Account';
+        });
+    }
     
-    document.querySelector('.sign-up-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const name = document.getElementById('signUpName').value;
-        const email = document.getElementById('signUpEmail').value;
-        const phone = document.getElementById('signUpPhone').value;
-        const password = document.getElementById('signUpPassword').value;
-        const terms = document.getElementById('termsConditions').checked;
-        
-        // Basic validation
-        if (!name || !email || !phone || !password) {
-            alert('Please fill in all fields');
-            return;
-        }
-        
-        if (!terms) {
-            alert('Please agree to the Terms & Conditions');
-            return;
-        }
-        
-        // Mock sign up (in a real app, this would call an API)
-        alert('Account created successfully! Please check your email to verify your account.');
-        signInModal.style.display = 'none';
-        document.body.style.overflow = 'auto';
-    });
+    const signUpForm = document.querySelector('.sign-up-form');
+    if (signUpForm) {
+        signUpForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('signUpName').value;
+            const email = document.getElementById('signUpEmail').value;
+            const phone = document.getElementById('signUpPhone').value;
+            const password = document.getElementById('signUpPassword').value;
+            const terms = document.getElementById('termsConditions').checked;
+            
+            // Basic validation
+            if (!name || !email || !phone || !password) {
+                alert('Please fill in all fields');
+                return;
+            }
+            
+            if (!terms) {
+                alert('Please agree to the Terms & Conditions');
+                return;
+            }
+            
+            // Mock sign up (in a real app, this would call an API)
+            alert('Account created successfully! Please check your email to verify your account.');
+            signInModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        });
+    }
 
     // Helper Functions
 
