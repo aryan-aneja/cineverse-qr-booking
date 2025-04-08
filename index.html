@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,6 +18,12 @@
         <div class="logo">
           <h1>Cine<span>Verse</span></h1>
         </div>
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="Search for movies..." class="search-input">
+          <button class="search-btn">
+            <i class="icon-search">🔍</i>
+          </button>
+        </div>
         <nav>
           <ul>
             <li><a href="#" class="active">Home</a></li>
@@ -28,7 +33,17 @@
           </ul>
         </nav>
         <div class="nav-buttons">
-          <button class="btn btn-location"><i class="icon-location"></i> Mumbai</button>
+          <div class="location-selector">
+            <button class="btn btn-location" id="locationBtn"><i class="icon-location">📍</i> <span id="selectedLocation">Mumbai</span></button>
+            <div class="location-dropdown" id="locationDropdown">
+              <div class="location-item" data-location="Mumbai">Mumbai</div>
+              <div class="location-item" data-location="Delhi">Delhi</div>
+              <div class="location-item" data-location="Bangalore">Bangalore</div>
+              <div class="location-item" data-location="Chennai">Chennai</div>
+              <div class="location-item" data-location="Hyderabad">Hyderabad</div>
+              <div class="location-item" data-location="Kolkata">Kolkata</div>
+            </div>
+          </div>
           <button class="btn btn-primary" id="signInBtn">Sign In</button>
         </div>
       </div>
@@ -62,7 +77,7 @@
             <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=Kalki+2898+AD" alt="Kalki 2898 AD">
             <div class="movie-rating">
               <span>8.5</span>
-              <i class="icon-star"></i>
+              <i class="icon-star">★</i>
             </div>
           </div>
           <div class="movie-info">
@@ -77,7 +92,7 @@
             <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=Deadpool+%26+Wolverine" alt="Deadpool & Wolverine">
             <div class="movie-rating">
               <span>9.2</span>
-              <i class="icon-star"></i>
+              <i class="icon-star">★</i>
             </div>
           </div>
           <div class="movie-info">
@@ -92,7 +107,7 @@
             <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=Devara" alt="Devara">
             <div class="movie-rating">
               <span>7.8</span>
-              <i class="icon-star"></i>
+              <i class="icon-star">★</i>
             </div>
           </div>
           <div class="movie-info">
@@ -107,13 +122,73 @@
             <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=Indian+2" alt="Indian 2">
             <div class="movie-rating">
               <span>8.0</span>
-              <i class="icon-star"></i>
+              <i class="icon-star">★</i>
             </div>
           </div>
           <div class="movie-info">
             <h3>Indian 2</h3>
             <p>Tamil • Action/Thriller</p>
             <button class="btn btn-book" data-id="movie4">Book Tickets</button>
+          </div>
+        </div>
+        
+        <div class="movie-card" data-lang="hindi">
+          <div class="movie-poster">
+            <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=Jawan" alt="Jawan">
+            <div class="movie-rating">
+              <span>8.7</span>
+              <i class="icon-star">★</i>
+            </div>
+          </div>
+          <div class="movie-info">
+            <h3>Jawan</h3>
+            <p>Hindi • Action/Thriller</p>
+            <button class="btn btn-book" data-id="movie5">Book Tickets</button>
+          </div>
+        </div>
+        
+        <div class="movie-card" data-lang="english">
+          <div class="movie-poster">
+            <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=Oppenheimer" alt="Oppenheimer">
+            <div class="movie-rating">
+              <span>9.0</span>
+              <i class="icon-star">★</i>
+            </div>
+          </div>
+          <div class="movie-info">
+            <h3>Oppenheimer</h3>
+            <p>English • Drama/History</p>
+            <button class="btn btn-book" data-id="movie6">Book Tickets</button>
+          </div>
+        </div>
+        
+        <div class="movie-card" data-lang="tamil">
+          <div class="movie-poster">
+            <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=Leo" alt="Leo">
+            <div class="movie-rating">
+              <span>8.3</span>
+              <i class="icon-star">★</i>
+            </div>
+          </div>
+          <div class="movie-info">
+            <h3>Leo</h3>
+            <p>Tamil • Action/Thriller</p>
+            <button class="btn btn-book" data-id="movie7">Book Tickets</button>
+          </div>
+        </div>
+        
+        <div class="movie-card" data-lang="telugu">
+          <div class="movie-poster">
+            <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=RRR" alt="RRR">
+            <div class="movie-rating">
+              <span>9.5</span>
+              <i class="icon-star">★</i>
+            </div>
+          </div>
+          <div class="movie-info">
+            <h3>RRR</h3>
+            <p>Telugu • Action/Drama</p>
+            <button class="btn btn-book" data-id="movie8">Book Tickets</button>
           </div>
         </div>
       </div>
@@ -355,6 +430,8 @@
                     <div class="seat" data-seat="A8"></div>
                     <div class="seat" data-seat="A9"></div>
                     <div class="seat" data-seat="A10"></div>
+                    <div class="seat" data-seat="A11"></div>
+                    <div class="seat" data-seat="A12"></div>
                   </div>
                 </div>
                 
@@ -371,6 +448,8 @@
                     <div class="seat" data-seat="B8"></div>
                     <div class="seat booked" data-seat="B9"></div>
                     <div class="seat" data-seat="B10"></div>
+                    <div class="seat" data-seat="B11"></div>
+                    <div class="seat" data-seat="B12"></div>
                   </div>
                 </div>
                 
@@ -387,6 +466,8 @@
                     <div class="seat" data-seat="C8"></div>
                     <div class="seat" data-seat="C9"></div>
                     <div class="seat" data-seat="C10"></div>
+                    <div class="seat" data-seat="C11"></div>
+                    <div class="seat" data-seat="C12"></div>
                   </div>
                 </div>
                 
@@ -403,6 +484,8 @@
                     <div class="seat premium" data-seat="D8" data-price="350"></div>
                     <div class="seat premium" data-seat="D9" data-price="350"></div>
                     <div class="seat premium" data-seat="D10" data-price="350"></div>
+                    <div class="seat premium" data-seat="D11" data-price="350"></div>
+                    <div class="seat premium" data-seat="D12" data-price="350"></div>
                   </div>
                 </div>
                 
@@ -419,6 +502,98 @@
                     <div class="seat premium booked" data-seat="E8" data-price="350"></div>
                     <div class="seat premium" data-seat="E9" data-price="350"></div>
                     <div class="seat premium" data-seat="E10" data-price="350"></div>
+                    <div class="seat premium" data-seat="E11" data-price="350"></div>
+                    <div class="seat premium" data-seat="E12" data-price="350"></div>
+                  </div>
+                </div>
+                
+                <div class="seat-row">
+                  <div class="row-name">F</div>
+                  <div class="seats premium">
+                    <div class="seat premium" data-seat="F1" data-price="350"></div>
+                    <div class="seat premium" data-seat="F2" data-price="350"></div>
+                    <div class="seat premium" data-seat="F3" data-price="350"></div>
+                    <div class="seat premium" data-seat="F4" data-price="350"></div>
+                    <div class="seat premium" data-seat="F5" data-price="350"></div>
+                    <div class="seat premium" data-seat="F6" data-price="350"></div>
+                    <div class="seat premium" data-seat="F7" data-price="350"></div>
+                    <div class="seat premium" data-seat="F8" data-price="350"></div>
+                    <div class="seat premium" data-seat="F9" data-price="350"></div>
+                    <div class="seat premium" data-seat="F10" data-price="350"></div>
+                    <div class="seat premium" data-seat="F11" data-price="350"></div>
+                    <div class="seat premium" data-seat="F12" data-price="350"></div>
+                  </div>
+                </div>
+                
+                <div class="seat-row">
+                  <div class="row-name">G</div>
+                  <div class="seats premium">
+                    <div class="seat premium" data-seat="G1" data-price="350"></div>
+                    <div class="seat premium" data-seat="G2" data-price="350"></div>
+                    <div class="seat premium booked" data-seat="G3" data-price="350"></div>
+                    <div class="seat premium booked" data-seat="G4" data-price="350"></div>
+                    <div class="seat premium" data-seat="G5" data-price="350"></div>
+                    <div class="seat premium" data-seat="G6" data-price="350"></div>
+                    <div class="seat premium" data-seat="G7" data-price="350"></div>
+                    <div class="seat premium" data-seat="G8" data-price="350"></div>
+                    <div class="seat premium booked" data-seat="G9" data-price="350"></div>
+                    <div class="seat premium booked" data-seat="G10" data-price="350"></div>
+                    <div class="seat premium" data-seat="G11" data-price="350"></div>
+                    <div class="seat premium" data-seat="G12" data-price="350"></div>
+                  </div>
+                </div>
+                
+                <div class="seat-row">
+                  <div class="row-name">H</div>
+                  <div class="seats">
+                    <div class="seat" data-seat="H1"></div>
+                    <div class="seat" data-seat="H2"></div>
+                    <div class="seat" data-seat="H3"></div>
+                    <div class="seat" data-seat="H4"></div>
+                    <div class="seat" data-seat="H5"></div>
+                    <div class="seat booked" data-seat="H6"></div>
+                    <div class="seat booked" data-seat="H7"></div>
+                    <div class="seat" data-seat="H8"></div>
+                    <div class="seat" data-seat="H9"></div>
+                    <div class="seat" data-seat="H10"></div>
+                    <div class="seat" data-seat="H11"></div>
+                    <div class="seat" data-seat="H12"></div>
+                  </div>
+                </div>
+                
+                <div class="seat-row">
+                  <div class="row-name">I</div>
+                  <div class="seats">
+                    <div class="seat" data-seat="I1"></div>
+                    <div class="seat" data-seat="I2"></div>
+                    <div class="seat" data-seat="I3"></div>
+                    <div class="seat booked" data-seat="I4"></div>
+                    <div class="seat booked" data-seat="I5"></div>
+                    <div class="seat" data-seat="I6"></div>
+                    <div class="seat" data-seat="I7"></div>
+                    <div class="seat" data-seat="I8"></div>
+                    <div class="seat" data-seat="I9"></div>
+                    <div class="seat" data-seat="I10"></div>
+                    <div class="seat" data-seat="I11"></div>
+                    <div class="seat" data-seat="I12"></div>
+                  </div>
+                </div>
+                
+                <div class="seat-row">
+                  <div class="row-name">J</div>
+                  <div class="seats">
+                    <div class="seat" data-seat="J1"></div>
+                    <div class="seat" data-seat="J2"></div>
+                    <div class="seat" data-seat="J3"></div>
+                    <div class="seat" data-seat="J4"></div>
+                    <div class="seat" data-seat="J5"></div>
+                    <div class="seat" data-seat="J6"></div>
+                    <div class="seat" data-seat="J7"></div>
+                    <div class="seat" data-seat="J8"></div>
+                    <div class="seat" data-seat="J9"></div>
+                    <div class="seat" data-seat="J10"></div>
+                    <div class="seat" data-seat="J11"></div>
+                    <div class="seat" data-seat="J12"></div>
                   </div>
                 </div>
               </div>
@@ -500,7 +675,7 @@
               <div class="payment-form" id="upi-payment">
                 <div class="qr-container">
                   <div class="qr-code">
-                    <img src="https://placehold.co/200x200/e84545/FFFFFF?text=QR+Code" alt="Payment QR Code">
+                    <img src="https://placehold.co/200x200/1a1a2e/FFFFFF?text=Scan+to+Pay" alt="Payment QR Code" id="paymentQRCode">
                   </div>
                   <div class="qr-instructions">
                     <h4>Scan & Pay</h4>
@@ -598,7 +773,7 @@
                 <div class="ticket-header">
                   <div class="ticket-logo">Cine<span>Verse</span></div>
                   <div class="ticket-qr">
-                    <img src="https://placehold.co/100x100/e84545/FFFFFF?text=Ticket+QR" alt="Ticket QR Code">
+                    <img src="https://placehold.co/100x100/e84545/FFFFFF?text=Ticket+QR" alt="Ticket QR Code" id="ticketQRCode">
                   </div>
                 </div>
                 <div class="ticket-details">

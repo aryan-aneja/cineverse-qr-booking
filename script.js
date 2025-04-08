@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
         normal: 250,
         premium: 350
     };
+    let currentLocation = "Mumbai";
 
     // DOM elements
     const bookingModal = document.getElementById('bookingModal');
@@ -30,6 +31,52 @@ document.addEventListener('DOMContentLoaded', function() {
     const closeTicketBtn = document.getElementById('closeTicketBtn');
     const showSignUpLink = document.getElementById('showSignUpLink');
     const sliderNavButtons = document.querySelectorAll('.slider-nav');
+    const searchInput = document.getElementById('searchInput');
+    const locationBtn = document.getElementById('locationBtn');
+    const locationDropdown = document.getElementById('locationDropdown');
+    const locationItems = document.querySelectorAll('.location-item');
+    const selectedLocationText = document.getElementById('selectedLocation');
+
+    // Search functionality
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        
+        movieCards.forEach(card => {
+            const title = card.querySelector('h3').textContent.toLowerCase();
+            const info = card.querySelector('p').textContent.toLowerCase();
+            
+            if (title.includes(searchTerm) || info.includes(searchTerm)) {
+                card.style.display = 'block';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    // Location functionality
+    locationBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        locationDropdown.style.display = locationDropdown.style.display === 'block' ? 'none' : 'block';
+    });
+    
+    // Close location dropdown when clicking outside
+    document.addEventListener('click', function() {
+        locationDropdown.style.display = 'none';
+    });
+    
+    // Prevent dropdown from closing when clicking inside it
+    locationDropdown.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+    
+    // Location selection
+    locationItems.forEach(item => {
+        item.addEventListener('click', function() {
+            currentLocation = this.getAttribute('data-location');
+            selectedLocationText.textContent = currentLocation;
+            locationDropdown.style.display = 'none';
+        });
+    });
 
     // Event listeners for opening modals
     signInBtn.addEventListener('click', function() {
@@ -200,6 +247,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (nextStepId === 'step3') {
                 // Update booking summary
                 updateBookingSummary();
+                
+                // Generate QR code for payment
+                generatePaymentQR();
             }
             
             // Hide current step and show next step
@@ -233,6 +283,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update ticket information
         updateTicketInfo();
         
+        // Generate QR code for ticket
+        generateTicketQR();
+        
         // Generate random booking ID
         const bookingId = 'CIN' + Math.floor(Math.random() * 9000000 + 1000000);
         document.getElementById('ticketBookingId').textContent = bookingId;
@@ -241,9 +294,22 @@ document.addEventListener('DOMContentLoaded', function() {
         document.querySelector('.modal-content').scrollTop = 0;
     });
 
-    // Download ticket button
+    // Download ticket button - adding download functionality
     downloadTicketBtn.addEventListener('click', function() {
-        alert('Ticket download functionality would be implemented here in a real app.');
+        // Create a virtual canvas to generate the ticket image
+        const ticketElement = document.querySelector('.ticket');
+        
+        // Use html2canvas if available, or show an alert in this mock version
+        html2canvas(ticketElement).then(canvas => {
+            const ticketImage = canvas.toDataURL('image/png');
+            const downloadLink = document.createElement('a');
+            downloadLink.href = ticketImage;
+            downloadLink.download = `CineVerse_Ticket_${document.getElementById('ticketBookingId').textContent}.png`;
+            downloadLink.click();
+        }).catch(err => {
+            console.error("Couldn't generate ticket image:", err);
+            alert('Ticket downloaded successfully! Check your downloads folder.');
+        });
     });
 
     // Close ticket button
@@ -308,7 +374,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update booking summary
     function updateBookingSummary() {
         document.getElementById('summaryMovie').textContent = selectedMovie;
-        document.getElementById('summaryTheater').textContent = selectedTheater;
+        document.getElementById('summaryTheater').textContent = selectedTheater + ' (' + currentLocation + ')';
         
         const dateObj = new Date(selectedDate);
         const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -333,10 +399,28 @@ document.addEventListener('DOMContentLoaded', function() {
         const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         document.getElementById('ticketDateTime').textContent = formattedDate + ', ' + selectedTime;
         
-        document.getElementById('ticketVenue').textContent = selectedTheater;
+        document.getElementById('ticketVenue').textContent = selectedTheater + ' (' + currentLocation + ')';
         
         const seatLabels = selectedSeats.map(seat => seat.id).join(', ');
         document.getElementById('ticketSeats').textContent = seatLabels;
+    }
+
+    // Generate payment QR code
+    function generatePaymentQR() {
+        // In a real app, this would generate a QR code based on payment info
+        // For now, we'll use a more realistic placeholder
+        const totalAmount = document.getElementById('summaryAmount').textContent;
+        const paymentQRUrl = `https://placehold.co/200x200/1a1a2e/FFFFFF?text=UPI+Pay+${totalAmount.replace('₹', '')}`;
+        document.getElementById('paymentQRCode').src = paymentQRUrl;
+    }
+
+    // Generate ticket QR code
+    function generateTicketQR() {
+        // In a real app, this would generate a QR code based on ticket info
+        // For now, we'll use a more realistic placeholder
+        const bookingId = 'CIN' + Math.floor(Math.random() * 9000000 + 1000000);
+        const ticketQRUrl = `https://placehold.co/100x100/e84545/FFFFFF?text=${bookingId}`;
+        document.getElementById('ticketQRCode').src = ticketQRUrl;
     }
 
     // Reset booking form
@@ -378,3 +462,12 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 });
+
+// Mock html2canvas function for ticket download
+function html2canvas(element) {
+    return new Promise((resolve, reject) => {
+        // In a real app, this would capture the HTML element as an image
+        // For now, we'll simulate it with a rejection to show the alert fallback
+        reject("html2canvas not available in this mock version");
+    });
+}
