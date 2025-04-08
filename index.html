@@ -1,26 +1,665 @@
+
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>cineverse-qr-booking</title>
-    <meta name="description" content="Lovable Generated Project" />
-    <meta name="author" content="Lovable" />
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineVerse - Premium Movie Booking</title>
+  <meta name="description" content="Book your favorite movies with CineVerse - India's premium movie booking platform">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Section -->
+    <header>
+      <div class="navbar">
+        <div class="logo">
+          <h1>Cine<span>Verse</span></h1>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#movies">Movies</a></li>
+            <li><a href="#offers">Offers</a></li>
+            <li><a href="#about">About</a></li>
+          </ul>
+        </nav>
+        <div class="nav-buttons">
+          <button class="btn btn-location"><i class="icon-location"></i> Mumbai</button>
+          <button class="btn btn-primary" id="signInBtn">Sign In</button>
+        </div>
+      </div>
+    </header>
 
-    <meta property="og:title" content="cineverse-qr-booking" />
-    <meta property="og:description" content="Lovable Generated Project" />
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
+    <!-- Hero Banner Section -->
+    <section class="hero-banner">
+      <div class="hero-content">
+        <h2>Book Your Perfect Movie Experience</h2>
+        <p>Premium seats, immersive sound, and crystal-clear visuals</p>
+        <button class="btn btn-primary btn-large">Book Now</button>
+      </div>
+    </section>
 
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:site" content="@lovable_dev" />
-    <meta name="twitter:image" content="https://lovable.dev/opengraph-image-p98pqg.png" />
-  </head>
+    <!-- Now Showing Section -->
+    <section id="movies" class="now-showing">
+      <div class="section-header">
+        <h2>Now Showing</h2>
+        <div class="filters">
+          <button class="filter-btn active" data-filter="all">All</button>
+          <button class="filter-btn" data-filter="hindi">Hindi</button>
+          <button class="filter-btn" data-filter="english">English</button>
+          <button class="filter-btn" data-filter="tamil">Tamil</button>
+          <button class="filter-btn" data-filter="telugu">Telugu</button>
+        </div>
+      </div>
+      
+      <div class="movie-list">
+        <div class="movie-card" data-lang="hindi">
+          <div class="movie-poster">
+            <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=Kalki+2898+AD" alt="Kalki 2898 AD">
+            <div class="movie-rating">
+              <span>8.5</span>
+              <i class="icon-star"></i>
+            </div>
+          </div>
+          <div class="movie-info">
+            <h3>Kalki 2898 AD</h3>
+            <p>Hindi • Action/Sci-Fi</p>
+            <button class="btn btn-book" data-id="movie1">Book Tickets</button>
+          </div>
+        </div>
+        
+        <div class="movie-card" data-lang="english">
+          <div class="movie-poster">
+            <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=Deadpool+%26+Wolverine" alt="Deadpool & Wolverine">
+            <div class="movie-rating">
+              <span>9.2</span>
+              <i class="icon-star"></i>
+            </div>
+          </div>
+          <div class="movie-info">
+            <h3>Deadpool & Wolverine</h3>
+            <p>English • Action/Comedy</p>
+            <button class="btn btn-book" data-id="movie2">Book Tickets</button>
+          </div>
+        </div>
+        
+        <div class="movie-card" data-lang="telugu">
+          <div class="movie-poster">
+            <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=Devara" alt="Devara">
+            <div class="movie-rating">
+              <span>7.8</span>
+              <i class="icon-star"></i>
+            </div>
+          </div>
+          <div class="movie-info">
+            <h3>Devara</h3>
+            <p>Telugu • Action/Drama</p>
+            <button class="btn btn-book" data-id="movie3">Book Tickets</button>
+          </div>
+        </div>
+        
+        <div class="movie-card" data-lang="tamil">
+          <div class="movie-poster">
+            <img src="https://placehold.co/250x370/1a1a2e/FFFFFF?text=Indian+2" alt="Indian 2">
+            <div class="movie-rating">
+              <span>8.0</span>
+              <i class="icon-star"></i>
+            </div>
+          </div>
+          <div class="movie-info">
+            <h3>Indian 2</h3>
+            <p>Tamil • Action/Thriller</p>
+            <button class="btn btn-book" data-id="movie4">Book Tickets</button>
+          </div>
+        </div>
+      </div>
+    </section>
 
-  <body>
-    <div id="root"></div>
-    <!-- IMPORTANT: DO NOT REMOVE THIS SCRIPT TAG OR THIS VERY COMMENT! -->
-    <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+    <!-- Coming Soon Section -->
+    <section class="coming-soon">
+      <div class="section-header">
+        <h2>Coming Soon</h2>
+      </div>
+      <div class="coming-soon-slider">
+        <div class="slider-container">
+          <div class="slider-item">
+            <img src="https://placehold.co/300x170/1a1a2e/FFFFFF?text=Stree+2" alt="Stree 2">
+            <div class="slider-info">
+              <h4>Stree 2</h4>
+              <p>Coming Aug 30</p>
+            </div>
+          </div>
+          <div class="slider-item">
+            <img src="https://placehold.co/300x170/1a1a2e/FFFFFF?text=Pushpa+2" alt="Pushpa 2">
+            <div class="slider-info">
+              <h4>Pushpa 2</h4>
+              <p>Coming Dec 6</p>
+            </div>
+          </div>
+          <div class="slider-item">
+            <img src="https://placehold.co/300x170/1a1a2e/FFFFFF?text=Singham+Again" alt="Singham Again">
+            <div class="slider-info">
+              <h4>Singham Again</h4>
+              <p>Coming Nov 1</p>
+            </div>
+          </div>
+        </div>
+        <button class="slider-nav prev">❮</button>
+        <button class="slider-nav next">❯</button>
+      </div>
+    </section>
+
+    <!-- Offers Section -->
+    <section id="offers" class="offers">
+      <div class="section-header">
+        <h2>Offers & Promotions</h2>
+      </div>
+      <div class="offer-cards">
+        <div class="offer-card">
+          <div class="offer-icon">
+            <img src="https://placehold.co/50x50/e84545/FFFFFF?text=%" alt="Discount">
+          </div>
+          <div class="offer-content">
+            <h3>FIRST50</h3>
+            <p>50% off on your first booking</p>
+          </div>
+        </div>
+        <div class="offer-card">
+          <div class="offer-icon">
+            <img src="https://placehold.co/50x50/e84545/FFFFFF?text=₹" alt="Cashback">
+          </div>
+          <div class="offer-content">
+            <h3>WEEKDAY</h3>
+            <p>Flat ₹75 off on weekday tickets</p>
+          </div>
+        </div>
+        <div class="offer-card">
+          <div class="offer-icon">
+            <img src="https://placehold.co/50x50/e84545/FFFFFF?text=2+1" alt="Combo Deal">
+          </div>
+          <div class="offer-content">
+            <h3>COMBOFUN</h3>
+            <p>Buy 2 tickets, get 1 free on weekends</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+      <div class="section-header">
+        <h2>Why CineVerse?</h2>
+      </div>
+      <div class="features">
+        <div class="feature">
+          <div class="feature-icon">🎟️</div>
+          <h3>Hassle-free Booking</h3>
+          <p>Quick and easy ticket booking experience</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🍿</div>
+          <h3>Premium Experience</h3>
+          <p>Luxury seating, immersive sound, and crystal-clear visuals</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">💰</div>
+          <h3>Secure Payments</h3>
+          <p>Multiple payment options with secure encryption</p>
+        </div>
+        <div class="feature">
+          <div class="feature-icon">🎁</div>
+          <h3>Exclusive Offers</h3>
+          <p>Regular promotions and loyalty program benefits</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="footer-content">
+        <div class="footer-logo">
+          <h2>Cine<span>Verse</span></h2>
+          <p>India's premium movie booking platform</p>
+        </div>
+        <div class="footer-links">
+          <div class="link-group">
+            <h4>Company</h4>
+            <ul>
+              <li><a href="#">About Us</a></li>
+              <li><a href="#">Careers</a></li>
+              <li><a href="#">Contact</a></li>
+            </ul>
+          </div>
+          <div class="link-group">
+            <h4>Support</h4>
+            <ul>
+              <li><a href="#">Help Center</a></li>
+              <li><a href="#">Terms of Service</a></li>
+              <li><a href="#">Privacy Policy</a></li>
+            </ul>
+          </div>
+          <div class="link-group">
+            <h4>Connect</h4>
+            <ul>
+              <li><a href="#">Facebook</a></li>
+              <li><a href="#">Instagram</a></li>
+              <li><a href="#">Twitter</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="copyright">
+        <p>&copy; 2025 CineVerse. All rights reserved.</p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- Booking Modal -->
+  <div class="modal" id="bookingModal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <div class="booking-container">
+        <div class="booking-header">
+          <h2 id="selectedMovieTitle">Movie Title</h2>
+          <div class="booking-movie-details">
+            <span id="movieLanguage">Hindi</span>
+            <span id="movieCertificate">UA</span>
+            <span id="movieGenre">Action/Drama</span>
+          </div>
+        </div>
+        
+        <div class="booking-steps">
+          <div class="step" id="step1">
+            <h3>1. Select Date & Time</h3>
+            <div class="date-selector">
+              <div class="date-item" data-date="2025-04-08">
+                <div class="day">Today</div>
+                <div class="date">8</div>
+                <div class="month">Apr</div>
+              </div>
+              <div class="date-item" data-date="2025-04-09">
+                <div class="day">Wed</div>
+                <div class="date">9</div>
+                <div class="month">Apr</div>
+              </div>
+              <div class="date-item" data-date="2025-04-10">
+                <div class="day">Thu</div>
+                <div class="date">10</div>
+                <div class="month">Apr</div>
+              </div>
+              <div class="date-item" data-date="2025-04-11">
+                <div class="day">Fri</div>
+                <div class="date">11</div>
+                <div class="month">Apr</div>
+              </div>
+              <div class="date-item" data-date="2025-04-12">
+                <div class="day">Sat</div>
+                <div class="date">12</div>
+                <div class="month">Apr</div>
+              </div>
+            </div>
+            
+            <div class="time-selector">
+              <h4>INOX: R City Mall, Ghatkopar</h4>
+              <div class="time-options">
+                <button class="time-btn" data-time="10:30 AM">10:30 AM</button>
+                <button class="time-btn" data-time="1:45 PM">1:45 PM</button>
+                <button class="time-btn" data-time="4:30 PM">4:30 PM</button>
+                <button class="time-btn" data-time="7:15 PM">7:15 PM</button>
+                <button class="time-btn" data-time="10:00 PM">10:00 PM</button>
+              </div>
+              
+              <h4>PVR: Phoenix Marketcity, Kurla</h4>
+              <div class="time-options">
+                <button class="time-btn" data-time="9:00 AM">9:00 AM</button>
+                <button class="time-btn" data-time="12:15 PM">12:15 PM</button>
+                <button class="time-btn" data-time="3:30 PM">3:30 PM</button>
+                <button class="time-btn" data-time="6:45 PM">6:45 PM</button>
+                <button class="time-btn" data-time="9:45 PM">9:45 PM</button>
+              </div>
+            </div>
+            
+            <div class="step-navigation">
+              <button class="btn btn-primary next-step" data-next="step2" disabled>Continue</button>
+            </div>
+          </div>
+          
+          <div class="step" id="step2" style="display:none;">
+            <h3>2. Select Seats</h3>
+            <div class="seat-layout">
+              <div class="screen">
+                <p>SCREEN</p>
+              </div>
+              
+              <div class="seating-info">
+                <div class="seat-type"><span class="seat available"></span> Available</div>
+                <div class="seat-type"><span class="seat selected"></span> Selected</div>
+                <div class="seat-type"><span class="seat booked"></span> Booked</div>
+              </div>
+              
+              <div class="seats-container">
+                <div class="seat-row">
+                  <div class="row-name">A</div>
+                  <div class="seats">
+                    <div class="seat" data-seat="A1"></div>
+                    <div class="seat" data-seat="A2"></div>
+                    <div class="seat" data-seat="A3"></div>
+                    <div class="seat" data-seat="A4"></div>
+                    <div class="seat" data-seat="A5"></div>
+                    <div class="seat booked" data-seat="A6"></div>
+                    <div class="seat booked" data-seat="A7"></div>
+                    <div class="seat" data-seat="A8"></div>
+                    <div class="seat" data-seat="A9"></div>
+                    <div class="seat" data-seat="A10"></div>
+                  </div>
+                </div>
+                
+                <div class="seat-row">
+                  <div class="row-name">B</div>
+                  <div class="seats">
+                    <div class="seat" data-seat="B1"></div>
+                    <div class="seat" data-seat="B2"></div>
+                    <div class="seat booked" data-seat="B3"></div>
+                    <div class="seat booked" data-seat="B4"></div>
+                    <div class="seat" data-seat="B5"></div>
+                    <div class="seat" data-seat="B6"></div>
+                    <div class="seat" data-seat="B7"></div>
+                    <div class="seat" data-seat="B8"></div>
+                    <div class="seat booked" data-seat="B9"></div>
+                    <div class="seat" data-seat="B10"></div>
+                  </div>
+                </div>
+                
+                <div class="seat-row">
+                  <div class="row-name">C</div>
+                  <div class="seats">
+                    <div class="seat" data-seat="C1"></div>
+                    <div class="seat" data-seat="C2"></div>
+                    <div class="seat" data-seat="C3"></div>
+                    <div class="seat" data-seat="C4"></div>
+                    <div class="seat" data-seat="C5"></div>
+                    <div class="seat" data-seat="C6"></div>
+                    <div class="seat" data-seat="C7"></div>
+                    <div class="seat" data-seat="C8"></div>
+                    <div class="seat" data-seat="C9"></div>
+                    <div class="seat" data-seat="C10"></div>
+                  </div>
+                </div>
+                
+                <div class="seat-row">
+                  <div class="row-name">D</div>
+                  <div class="seats premium">
+                    <div class="seat premium" data-seat="D1" data-price="350"></div>
+                    <div class="seat premium" data-seat="D2" data-price="350"></div>
+                    <div class="seat premium" data-seat="D3" data-price="350"></div>
+                    <div class="seat premium" data-seat="D4" data-price="350"></div>
+                    <div class="seat premium booked" data-seat="D5" data-price="350"></div>
+                    <div class="seat premium booked" data-seat="D6" data-price="350"></div>
+                    <div class="seat premium" data-seat="D7" data-price="350"></div>
+                    <div class="seat premium" data-seat="D8" data-price="350"></div>
+                    <div class="seat premium" data-seat="D9" data-price="350"></div>
+                    <div class="seat premium" data-seat="D10" data-price="350"></div>
+                  </div>
+                </div>
+                
+                <div class="seat-row">
+                  <div class="row-name">E</div>
+                  <div class="seats premium">
+                    <div class="seat premium" data-seat="E1" data-price="350"></div>
+                    <div class="seat premium" data-seat="E2" data-price="350"></div>
+                    <div class="seat premium" data-seat="E3" data-price="350"></div>
+                    <div class="seat premium booked" data-seat="E4" data-price="350"></div>
+                    <div class="seat premium" data-seat="E5" data-price="350"></div>
+                    <div class="seat premium" data-seat="E6" data-price="350"></div>
+                    <div class="seat premium" data-seat="E7" data-price="350"></div>
+                    <div class="seat premium booked" data-seat="E8" data-price="350"></div>
+                    <div class="seat premium" data-seat="E9" data-price="350"></div>
+                    <div class="seat premium" data-seat="E10" data-price="350"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="seat-price-info">
+                <div class="price-type">
+                  <span class="seat-color normal"></span>
+                  <p>Normal: ₹250</p>
+                </div>
+                <div class="price-type">
+                  <span class="seat-color premium"></span>
+                  <p>Premium: ₹350</p>
+                </div>
+              </div>
+            </div>
+            
+            <div class="seat-summary">
+              <p>Selected Seats: <span id="selectedSeatsLabel">None</span></p>
+              <p>Subtotal: <span id="subtotalAmount">₹0</span></p>
+              <p>Convenience Fee: <span id="convenienceFee">₹0</span></p>
+              <p class="total">Total Amount: <span id="totalAmount">₹0</span></p>
+            </div>
+            
+            <div class="step-navigation">
+              <button class="btn btn-secondary prev-step" data-prev="step1">Back</button>
+              <button class="btn btn-primary next-step" data-next="step3" disabled>Continue to Payment</button>
+            </div>
+          </div>
+          
+          <div class="step" id="step3" style="display:none;">
+            <h3>3. Payment</h3>
+            <div class="booking-summary">
+              <h4>Booking Summary</h4>
+              <div class="summary-details">
+                <div class="summary-item">
+                  <span class="label">Movie:</span>
+                  <span class="value" id="summaryMovie">Movie Title</span>
+                </div>
+                <div class="summary-item">
+                  <span class="label">Theater:</span>
+                  <span class="value" id="summaryTheater">Theater Name</span>
+                </div>
+                <div class="summary-item">
+                  <span class="label">Date & Time:</span>
+                  <span class="value" id="summaryDateTime">Date, Time</span>
+                </div>
+                <div class="summary-item">
+                  <span class="label">Seats:</span>
+                  <span class="value" id="summarySeats">A1, A2</span>
+                </div>
+                <div class="summary-item total">
+                  <span class="label">Total Amount:</span>
+                  <span class="value" id="summaryAmount">₹500</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="payment-options">
+              <h4>Select Payment Method</h4>
+              <div class="payment-methods">
+                <div class="payment-method active" data-method="upi">
+                  <div class="method-icon">📱</div>
+                  <div class="method-name">UPI Payment</div>
+                </div>
+                <div class="payment-method" data-method="cards">
+                  <div class="method-icon">💳</div>
+                  <div class="method-name">Credit/Debit Card</div>
+                </div>
+                <div class="payment-method" data-method="netbanking">
+                  <div class="method-icon">🏦</div>
+                  <div class="method-name">Net Banking</div>
+                </div>
+                <div class="payment-method" data-method="wallet">
+                  <div class="method-icon">👛</div>
+                  <div class="method-name">Wallet</div>
+                </div>
+              </div>
+              
+              <div class="payment-form" id="upi-payment">
+                <div class="qr-container">
+                  <div class="qr-code">
+                    <img src="https://placehold.co/200x200/e84545/FFFFFF?text=QR+Code" alt="Payment QR Code">
+                  </div>
+                  <div class="qr-instructions">
+                    <h4>Scan & Pay</h4>
+                    <ol>
+                      <li>Open any UPI app on your phone (GooglePay, PhonePe, Paytm, etc.)</li>
+                      <li>Scan the QR code shown here</li>
+                      <li>Complete the payment for <span id="qrAmount">₹500</span></li>
+                      <li>Do not close this page until payment is confirmed</li>
+                    </ol>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="payment-form" id="cards-payment" style="display:none;">
+                <div class="form-group">
+                  <label>Card Number</label>
+                  <input type="text" placeholder="1234 5678 9012 3456">
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Expiry Date</label>
+                    <input type="text" placeholder="MM/YY">
+                  </div>
+                  <div class="form-group">
+                    <label>CVV</label>
+                    <input type="password" placeholder="***">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Name on Card</label>
+                  <input type="text" placeholder="John Doe">
+                </div>
+              </div>
+              
+              <div class="payment-form" id="netbanking-payment" style="display:none;">
+                <div class="bank-options">
+                  <div class="bank-option">
+                    <input type="radio" name="bank" id="sbi">
+                    <label for="sbi">SBI</label>
+                  </div>
+                  <div class="bank-option">
+                    <input type="radio" name="bank" id="hdfc">
+                    <label for="hdfc">HDFC Bank</label>
+                  </div>
+                  <div class="bank-option">
+                    <input type="radio" name="bank" id="icici">
+                    <label for="icici">ICICI Bank</label>
+                  </div>
+                  <div class="bank-option">
+                    <input type="radio" name="bank" id="axis">
+                    <label for="axis">Axis Bank</label>
+                  </div>
+                  <div class="bank-option">
+                    <input type="radio" name="bank" id="other">
+                    <label for="other">Other Banks</label>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="payment-form" id="wallet-payment" style="display:none;">
+                <div class="wallet-options">
+                  <div class="wallet-option">
+                    <input type="radio" name="wallet" id="paytm">
+                    <label for="paytm">Paytm</label>
+                  </div>
+                  <div class="wallet-option">
+                    <input type="radio" name="wallet" id="phonepe">
+                    <label for="phonepe">PhonePe</label>
+                  </div>
+                  <div class="wallet-option">
+                    <input type="radio" name="wallet" id="amazpay">
+                    <label for="amazpay">Amazon Pay</label>
+                  </div>
+                  <div class="wallet-option">
+                    <input type="radio" name="wallet" id="mobikwik">
+                    <label for="mobikwik">MobiKwik</label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="step-navigation">
+              <button class="btn btn-secondary prev-step" data-prev="step2">Back</button>
+              <button class="btn btn-primary" id="confirmPaymentBtn">Confirm Payment</button>
+            </div>
+          </div>
+          
+          <div class="step" id="step4" style="display:none;">
+            <div class="booking-success">
+              <div class="success-icon">✓</div>
+              <h3>Booking Successful!</h3>
+              <p>Your tickets have been booked successfully.</p>
+              
+              <div class="ticket">
+                <div class="ticket-header">
+                  <div class="ticket-logo">Cine<span>Verse</span></div>
+                  <div class="ticket-qr">
+                    <img src="https://placehold.co/100x100/e84545/FFFFFF?text=Ticket+QR" alt="Ticket QR Code">
+                  </div>
+                </div>
+                <div class="ticket-details">
+                  <div class="ticket-movie">
+                    <h4 id="ticketMovie">Movie Title</h4>
+                    <p id="ticketLanguage">Hindi • UA</p>
+                  </div>
+                  <div class="ticket-info">
+                    <div class="info-item">
+                      <span class="info-label">Date & Time</span>
+                      <span class="info-value" id="ticketDateTime">Apr 8, 7:15 PM</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Venue</span>
+                      <span class="info-value" id="ticketVenue">INOX: R City Mall</span>
+                    </div>
+                    <div class="info-item">
+                      <span class="info-label">Seats</span>
+                      <span class="info-value" id="ticketSeats">D7, D8</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="ticket-footer">
+                  <span>Booking ID: <span id="ticketBookingId">CIN8415963</span></span>
+                </div>
+              </div>
+              
+              <p class="ticket-instructions">Please show this ticket at the entrance.</p>
+              <button class="btn btn-primary" id="downloadTicketBtn">Download Ticket</button>
+              <button class="btn btn-secondary" id="closeTicketBtn">Close</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Sign In Modal -->
+  <div class="modal" id="signInModal">
+    <div class="modal-content sign-in-content">
+      <span class="close-modal">&times;</span>
+      <div class="sign-in-form">
+        <h2>Sign In to CineVerse</h2>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" placeholder="Enter your email">
+        </div>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" placeholder="Enter your password">
+        </div>
+        <div class="form-actions">
+          <button class="btn btn-primary">Sign In</button>
+        </div>
+        <div class="form-footer">
+          <p>Don't have an account? <a href="#" id="showSignUpLink">Sign Up</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
 </html>
