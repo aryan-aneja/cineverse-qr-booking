@@ -1,4 +1,3 @@
-
 /* Global Styles */
 :root {
   --primary-color: #e84545;
@@ -561,6 +560,259 @@ footer {
   font-size: 28px;
   font-weight: bold;
   cursor: pointer;
+  z-index: 10;
+}
+
+/* Auth Modal Styles */
+.sign-in-content {
+  max-width: 450px;
+  overflow: hidden;
+}
+
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--light-gray);
+  background-color: var(--secondary-color);
+  position: relative;
+}
+
+.auth-tab {
+  flex: 1;
+  padding: 15px;
+  text-align: center;
+  font-weight: 500;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  color: var(--light-color);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.auth-tab.active {
+  color: var(--primary-color);
+}
+
+.auth-tab.active:after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--primary-color);
+  animation: slideIn 0.3s ease-out;
+}
+
+.auth-form {
+  padding: 30px;
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.auth-form.active {
+  display: block;
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+.form-animation {
+  animation: slideUp 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideIn {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.auth-form h2 {
+  margin-bottom: 25px;
+  text-align: center;
+  color: var(--secondary-color);
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.input-with-icon i {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-color);
+}
+
+.input-with-icon .toggle-password {
+  left: auto;
+  right: 12px;
+  cursor: pointer;
+}
+
+.input-with-icon input {
+  width: 100%;
+  padding: 12px 40px;
+  border: 1px solid var(--light-gray);
+  border-radius: 6px;
+  font-family: 'Poppins', sans-serif;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+.input-with-icon input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(232, 69, 69, 0.2);
+}
+
+.form-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.forgot-password {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.form-actions .btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.social-signin {
+  margin-top: 30px;
+  text-align: center;
+}
+
+.social-signin p {
+  color: var(--gray-color);
+  margin-bottom: 15px;
+  font-size: 14px;
+  position: relative;
+}
+
+.social-signin p:before,
+.social-signin p:after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 25%;
+  height: 1px;
+  background-color: var(--light-gray);
+}
+
+.social-signin p:before {
+  left: 0;
+}
+
+.social-signin p:after {
+  right: 0;
+}
+
+.social-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+}
+
+.social-btn {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  border: 1px solid var(--light-gray);
+  background-color: var(--light-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.social-btn i {
+  font-size: 20px;
+}
+
+.social-btn.google i {
+  color: #DB4437;
+}
+
+.social-btn.facebook i {
+  color: #4267B2;
+}
+
+.social-btn.twitter i {
+  color: #1DA1F2;
+}
+
+.social-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.password-strength {
+  margin-top: 10px;
+}
+
+.strength-bar {
+  height: 4px;
+  background-color: var(--light-gray);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 5px;
+}
+
+.strength-progress {
+  height: 100%;
+  width: 0;
+  background-color: #ff6b6b;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+#strengthText {
+  font-size: 12px;
+  color: var(--gray-color);
+}
+
+.terms-conditions {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.terms-conditions a {
+  color: var(--primary-color);
+  text-decoration: none;
 }
 
 /* Booking Modal Styles */
@@ -1134,6 +1386,15 @@ footer {
   .payment-methods {
     overflow-x: auto;
   }
+  
+  .auth-form {
+    padding: 20px;
+  }
+  
+  .social-signin p:before,
+  .social-signin p:after {
+    width: 20%;
+  }
 }
 
 @media (max-width: 576px) {
@@ -1169,5 +1430,16 @@ footer {
   
   .step-navigation .btn {
     width: 100%;
+  }
+  
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  
+  .social-signin p:before,
+  .social-signin p:after {
+    width: 15%;
   }
 }
