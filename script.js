@@ -11,11 +11,25 @@ document.addEventListener('DOMContentLoaded', function() {
         premium: 350
     };
     let currentLocation = "Mumbai";
+    let currentUser = null;
+    let bookedTickets = [];
+
+    // Load saved tickets from localStorage
+    try {
+        const savedTickets = localStorage.getItem('bookedTickets');
+        if (savedTickets) {
+            bookedTickets = JSON.parse(savedTickets);
+        }
+    } catch (e) {
+        console.error('Error loading saved tickets:', e);
+    }
 
     // DOM elements
     const bookingModal = document.getElementById('bookingModal');
     const signInModal = document.getElementById('signInModal');
+    const ticketsModal = document.getElementById('ticketsModal');
     const signInBtn = document.getElementById('signInBtn');
+    const myTicketsBtn = document.getElementById('myTicketsBtn');
     const closeModalButtons = document.querySelectorAll('.close-modal');
     const filterButtons = document.querySelectorAll('.filter-btn');
     const movieCards = document.querySelectorAll('.movie-card');
@@ -41,6 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const sliderNavButtons = document.querySelectorAll('.slider-nav');
     const navLinks = document.querySelectorAll('.nav-link');
     const bookNowBtn = document.getElementById('bookNowBtn');
+    const theatresLink = document.getElementById('theatresLink');
 
     // Navigation links functionality
     navLinks.forEach(link => {
@@ -53,9 +68,112 @@ document.addEventListener('DOMContentLoaded', function() {
                     top: section.offsetTop - 100,
                     behavior: 'smooth'
                 });
+            } else {
+                // For links that don't have corresponding sections
+                if (this.id === 'theatresLink') {
+                    showTheatresSection();
+                } else if (this.id === 'offersLink') {
+                    showOffersSection();
+                }
             }
         });
     });
+
+    // Theatres navigation
+    if (theatresLink) {
+        theatresLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            showTheatresSection();
+        });
+    }
+
+    // Function to show theatres section (placeholder implementation)
+    function showTheatresSection() {
+        // Hide main content sections
+        const mainSections = document.querySelectorAll('main > section:not(#theatres-section)');
+        mainSections.forEach(section => {
+            section.style.display = 'none';
+        });
+        
+        // Show or create theatres section
+        let theatresSection = document.getElementById('theatres-section');
+        if (!theatresSection) {
+            theatresSection = document.createElement('section');
+            theatresSection.id = 'theatres-section';
+            theatresSection.innerHTML = `
+                <div class="container mx-auto px-4 py-8">
+                    <h2 class="text-3xl font-bold mb-6">Our Theatres</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                            <img src="https://placehold.co/600x400/1a1a2e/FFFFFF?text=CineVerse+IMAX" alt="IMAX Theatre" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-xl mb-2">CineVerse IMAX</h3>
+                                <p class="text-gray-700">123 Movie Lane, ${currentLocation}</p>
+                                <p class="text-gray-600 mt-2">Experience movies in stunning IMAX quality with immersive sound.</p>
+                                <div class="mt-4">
+                                    <div class="flex items-center mb-1">
+                                        <span class="font-semibold mr-2">Amenities:</span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full mr-1">IMAX</span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full mr-1">4K</span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Dolby Atmos</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                            <img src="https://placehold.co/600x400/1a1a2e/FFFFFF?text=CineVerse+Gold" alt="Gold Class Theatre" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-xl mb-2">CineVerse Gold</h3>
+                                <p class="text-gray-700">456 Cinema Road, ${currentLocation}</p>
+                                <p class="text-gray-600 mt-2">Luxury recliner seating with in-seat dining service.</p>
+                                <div class="mt-4">
+                                    <div class="flex items-center mb-1">
+                                        <span class="font-semibold mr-2">Amenities:</span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full mr-1">Recliners</span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full mr-1">Dining</span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Premium Bar</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                            <img src="https://placehold.co/600x400/1a1a2e/FFFFFF?text=CineVerse+Family" alt="Family Theatre" class="w-full h-48 object-cover">
+                            <div class="p-4">
+                                <h3 class="font-bold text-xl mb-2">CineVerse Family</h3>
+                                <p class="text-gray-700">789 Entertainment Ave, ${currentLocation}</p>
+                                <p class="text-gray-600 mt-2">Family-friendly theatre with play area for children.</p>
+                                <div class="mt-4">
+                                    <div class="flex items-center mb-1">
+                                        <span class="font-semibold mr-2">Amenities:</span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full mr-1">Play Zone</span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full mr-1">Kid Seats</span>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">Family Packages</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mt-8 text-center">
+                        <button id="backToHome" class="bg-primary text-white px-6 py-2 rounded-full hover:bg-primary/80 transition-all">
+                            Back to Home
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.querySelector('main').appendChild(theatresSection);
+            
+            // Add event listener to back button
+            document.getElementById('backToHome').addEventListener('click', function() {
+                theatresSection.style.display = 'none';
+                // Show all main sections again
+                mainSections.forEach(section => {
+                    section.style.display = 'block';
+                });
+            });
+        } else {
+            theatresSection.style.display = 'block';
+        }
+    }
 
     // Book now button functionality
     if (bookNowBtn) {
@@ -69,6 +187,167 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
             }
         });
+    }
+
+    // My Tickets button functionality
+    if (myTicketsBtn) {
+        myTicketsBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            showMyTickets();
+        });
+    } else {
+        // Create My Tickets button if it doesn't exist
+        const navBarRight = document.querySelector('.navbar-right');
+        if (navBarRight) {
+            const myTicketsBtn = document.createElement('a');
+            myTicketsBtn.id = 'myTicketsBtn';
+            myTicketsBtn.href = '#';
+            myTicketsBtn.className = 'btn btn-primary btn-sm ms-2';
+            myTicketsBtn.innerHTML = '<i class="fas fa-ticket me-1"></i> My Tickets';
+            navBarRight.insertBefore(myTicketsBtn, signInBtn);
+            
+            myTicketsBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                showMyTickets();
+            });
+        }
+    }
+
+    // Show My Tickets Modal
+    function showMyTickets() {
+        if (!ticketsModal) {
+            // Create tickets modal if it doesn't exist
+            const ticketsModalHTML = `
+                <div id="ticketsModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close-modal">&times;</span>
+                        <h2>My Tickets</h2>
+                        <div id="ticketsList" class="tickets-list">
+                            ${bookedTickets.length === 0 ? 
+                                '<p>No tickets found. Book a movie to see your tickets here!</p>' : 
+                                renderTicketsList()}
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.insertAdjacentHTML('beforeend', ticketsModalHTML);
+            
+            // Get the newly created modal
+            const newTicketsModal = document.getElementById('ticketsModal');
+            
+            // Add close button functionality
+            const closeButton = newTicketsModal.querySelector('.close-modal');
+            closeButton.addEventListener('click', function() {
+                newTicketsModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            });
+
+            // Close on outside click
+            newTicketsModal.addEventListener('click', function(event) {
+                if (event.target === newTicketsModal) {
+                    newTicketsModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+
+            // Add download functionality for each ticket
+            const downloadButtons = newTicketsModal.querySelectorAll('.download-ticket');
+            downloadButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const ticketId = this.getAttribute('data-ticket-id');
+                    downloadTicket(ticketId);
+                });
+            });
+            
+            // Show the modal
+            newTicketsModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        } else {
+            // Update tickets list content
+            const ticketsListDiv = document.getElementById('ticketsList');
+            if (ticketsListDiv) {
+                ticketsListDiv.innerHTML = bookedTickets.length === 0 ? 
+                    '<p>No tickets found. Book a movie to see your tickets here!</p>' : 
+                    renderTicketsList();
+                
+                // Re-add event listeners for download buttons
+                const downloadButtons = ticketsListDiv.querySelectorAll('.download-ticket');
+                downloadButtons.forEach(button => {
+                    button.addEventListener('click', function() {
+                        const ticketId = this.getAttribute('data-ticket-id');
+                        downloadTicket(ticketId);
+                    });
+                });
+            }
+            
+            // Show the modal
+            ticketsModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    }
+
+    // Render tickets list HTML
+    function renderTicketsList() {
+        let html = '';
+        bookedTickets.forEach(ticket => {
+            html += `
+                <div class="ticket-item">
+                    <div class="ticket-details">
+                        <h3>${ticket.movie}</h3>
+                        <p><strong>Date & Time:</strong> ${ticket.date}, ${ticket.time}</p>
+                        <p><strong>Theatre:</strong> ${ticket.theater} (${ticket.location})</p>
+                        <p><strong>Seats:</strong> ${ticket.seats}</p>
+                        <p><strong>Booking ID:</strong> ${ticket.bookingId}</p>
+                    </div>
+                    <button class="download-ticket" data-ticket-id="${ticket.bookingId}">
+                        <i class="fas fa-download"></i> Download
+                    </button>
+                </div>
+            `;
+        });
+        return html;
+    }
+
+    // Download ticket function
+    function downloadTicket(ticketId) {
+        const ticket = bookedTickets.find(t => t.bookingId === ticketId);
+        if (!ticket) return;
+
+        // Create a virtual ticket for download
+        const ticketHTML = `
+            <div style="width:800px; padding:20px; border:2px solid #333; font-family:Arial, sans-serif;">
+                <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <h1 style="color:#e84545;">CineVerse</h1>
+                    <div style="text-align:right;">
+                        <p><strong>Booking ID:</strong> ${ticket.bookingId}</p>
+                        <img src="https://placehold.co/100x100/e84545/FFFFFF?text=${ticket.bookingId}" alt="QR Code">
+                    </div>
+                </div>
+                <hr style="border:1px solid #ddd;">
+                <h2 style="color:#333;">${ticket.movie}</h2>
+                <div style="display:flex; justify-content:space-between;">
+                    <div>
+                        <p><strong>Date & Time:</strong> ${ticket.date}, ${ticket.time}</p>
+                        <p><strong>Theatre:</strong> ${ticket.theater} (${ticket.location})</p>
+                        <p><strong>Seats:</strong> ${ticket.seats}</p>
+                    </div>
+                </div>
+                <div style="margin-top:20px; text-align:center; font-size:12px; color:#666;">
+                    <p>Present this ticket at the entrance. Enjoy your movie!</p>
+                </div>
+            </div>
+        `;
+
+        // Create a data URL from HTML
+        const ticketData = 'data:text/html;charset=utf-8,' + encodeURIComponent(ticketHTML);
+        
+        // Create an anchor and trigger the download
+        const downloadLink = document.createElement('a');
+        downloadLink.href = ticketData;
+        downloadLink.download = `CineVerse_Ticket_${ticket.bookingId}.html`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
     }
 
     // Sign In button fix
@@ -197,40 +476,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Event listeners for opening modals
-    if (signInBtn) {
-        signInBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            signInModal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        });
-    }
-
-    // Book tickets buttons
-    bookTicketButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            const movieId = this.getAttribute('data-id');
-            const movieCard = this.closest('.movie-card');
-            const movieTitle = movieCard.querySelector('h3').textContent;
-            const movieInfo = movieCard.querySelector('p').textContent;
-            
-            // Set movie information in booking modal
-            document.getElementById('selectedMovieTitle').textContent = movieTitle;
-            document.getElementById('movieLanguage').textContent = movieInfo.split('•')[0].trim();
-            document.getElementById('movieGenre').textContent = movieInfo.split('•')[1].trim();
-            
-            // Reset booking form
-            resetBookingForm();
-            
-            // Open booking modal
-            bookingModal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-            
-            // Set selected movie
-            selectedMovie = movieTitle;
-        });
-    });
-
     // Close modal buttons
     closeModalButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -248,6 +493,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         if (event.target === signInModal) {
             signInModal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        if (event.target === ticketsModal) {
+            ticketsModal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     });
@@ -413,28 +662,41 @@ document.addEventListener('DOMContentLoaded', function() {
             const bookingId = 'CIN' + Math.floor(Math.random() * 9000000 + 1000000);
             document.getElementById('ticketBookingId').textContent = bookingId;
             
+            // Save ticket information to localStorage
+            saveTicket(bookingId);
+            
             // Scroll to top of modal
             document.querySelector('.modal-content').scrollTop = 0;
         });
     }
 
-    // Download ticket button - adding download functionality
+    // Save ticket information
+    function saveTicket(bookingId) {
+        const ticket = {
+            bookingId: bookingId,
+            movie: selectedMovie,
+            date: new Date(selectedDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+            time: selectedTime,
+            theater: selectedTheater,
+            location: currentLocation,
+            seats: selectedSeats.map(seat => seat.id).join(', ')
+        };
+        
+        bookedTickets.push(ticket);
+        
+        try {
+            // Save to localStorage
+            localStorage.setItem('bookedTickets', JSON.stringify(bookedTickets));
+        } catch (e) {
+            console.error('Error saving ticket:', e);
+        }
+    }
+
+    // Download ticket button
     if (downloadTicketBtn) {
         downloadTicketBtn.addEventListener('click', function() {
-            // Create a virtual canvas to generate the ticket image
-            const ticketElement = document.querySelector('.ticket');
-            
-            // Use html2canvas if available, or show an alert in this mock version
-            html2canvas(ticketElement).then(canvas => {
-                const ticketImage = canvas.toDataURL('image/png');
-                const downloadLink = document.createElement('a');
-                downloadLink.href = ticketImage;
-                downloadLink.download = `CineVerse_Ticket_${document.getElementById('ticketBookingId').textContent}.png`;
-                downloadLink.click();
-            }).catch(err => {
-                console.error("Couldn't generate ticket image:", err);
-                alert('Ticket downloaded successfully! Check your downloads folder.');
-            });
+            const bookingId = document.getElementById('ticketBookingId').textContent;
+            downloadTicket(bookingId);
         });
     }
 
@@ -509,10 +771,36 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Mock sign up (in a real app, this would call an API)
             alert('Account created successfully! Please check your email to verify your account.');
-            signInModal.style.display = 'none';
-            document.body.style.overflow = 'auto';
+            
+            // Switch to Sign In tab after successful signup
+            document.querySelector('[data-tab="signIn"]').click();
         });
     }
+
+    // Book tickets buttons
+    bookTicketButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const movieId = this.getAttribute('data-id');
+            const movieCard = this.closest('.movie-card');
+            const movieTitle = movieCard.querySelector('h3').textContent;
+            const movieInfo = movieCard.querySelector('p').textContent;
+            
+            // Set movie information in booking modal
+            document.getElementById('selectedMovieTitle').textContent = movieTitle;
+            document.getElementById('movieLanguage').textContent = movieInfo.split('•')[0].trim();
+            document.getElementById('movieGenre').textContent = movieInfo.split('•')[1].trim();
+            
+            // Reset booking form
+            resetBookingForm();
+            
+            // Open booking modal
+            bookingModal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            
+            // Set selected movie
+            selectedMovie = movieTitle;
+        });
+    });
 
     // Helper Functions
 
@@ -642,8 +930,13 @@ document.addEventListener('DOMContentLoaded', function() {
 // Mock html2canvas function for ticket download
 function html2canvas(element) {
     return new Promise((resolve, reject) => {
-        // In a real app, this would capture the HTML element as an image
-        // For now, we'll simulate it with a rejection to show the alert fallback
-        reject("html2canvas not available in this mock version");
+        // Create a mock canvas object that simulates what html2canvas would return
+        const mockCanvas = {
+            toDataURL: function(type) {
+                // Return a data URL for testing purposes
+                return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+            }
+        };
+        resolve(mockCanvas);
     });
 }
