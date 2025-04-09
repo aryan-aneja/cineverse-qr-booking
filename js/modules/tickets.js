@@ -41,7 +41,8 @@ const Tickets = (() => {
             time: selectedTime,
             theater: selectedTheater,
             location: currentLocation,
-            seats: selectedSeats.map(seat => seat.id).join(', ')
+            seats: selectedSeats.map(seat => seat.id).join(', '),
+            qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${bookingId}_CINEVERSE_TICKET`
         };
         
         bookedTickets.push(ticket);
@@ -66,7 +67,7 @@ const Tickets = (() => {
                     <h1 style="color:#e84545;">CineVerse</h1>
                     <div style="text-align:right;">
                         <p><strong>Booking ID:</strong> ${ticket.bookingId}</p>
-                        <img src="https://placehold.co/100x100/e84545/FFFFFF?text=${ticket.bookingId}" alt="QR Code">
+                        <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${ticket.bookingId}`}" alt="Ticket QR Code" width="100" height="100">
                     </div>
                 </div>
                 <hr style="border:1px solid #ddd;">
@@ -99,6 +100,10 @@ const Tickets = (() => {
     // Render tickets list HTML
     const renderTicketsList = () => {
         let html = '';
+        if (bookedTickets.length === 0) {
+            return '<p>No tickets found. Book a movie to see your tickets here!</p>';
+        }
+        
         bookedTickets.forEach(ticket => {
             html += `
                 <div class="ticket-item">
@@ -108,6 +113,9 @@ const Tickets = (() => {
                         <p><strong>Theatre:</strong> ${ticket.theater} (${ticket.location})</p>
                         <p><strong>Seats:</strong> ${ticket.seats}</p>
                         <p><strong>Booking ID:</strong> ${ticket.bookingId}</p>
+                        <div class="ticket-qr">
+                            <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${ticket.bookingId}`}" alt="Ticket QR Code" width="80" height="80">
+                        </div>
                     </div>
                     <button class="download-ticket" data-ticket-id="${ticket.bookingId}">
                         <i class="fas fa-download"></i> Download

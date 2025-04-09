@@ -76,10 +76,14 @@ const Events = (() => {
                 myTicketsBtn.id = 'myTicketsBtn';
                 myTicketsBtn.href = '#';
                 myTicketsBtn.className = 'btn btn-primary btn-sm ms-2';
-                myTicketsBtn.innerHTML = '<i class="fas fa-ticket me-1"></i> My Tickets';
+                myTicketsBtn.innerHTML = '<i class="fas fa-ticket-alt me-1"></i> My Tickets';
                 
                 const signInBtn = document.getElementById('signInBtn');
-                navBarRight.insertBefore(myTicketsBtn, signInBtn);
+                if (signInBtn) {
+                    navBarRight.insertBefore(myTicketsBtn, signInBtn);
+                } else {
+                    navBarRight.appendChild(myTicketsBtn);
+                }
             }
         }
         

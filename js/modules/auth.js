@@ -5,13 +5,6 @@ const Auth = (() => {
     
     // DOM elements
     const initAuthElements = () => {
-        const signInBtn = document.getElementById('signInBtn');
-        const signInModal = document.getElementById('signInModal');
-        const authTabs = document.querySelectorAll('.auth-tab');
-        const authForms = document.querySelectorAll('.auth-form');
-        const togglePasswordButtons = document.querySelectorAll('.toggle-password');
-        const signUpPasswordInput = document.getElementById('signUpPassword');
-        
         setupEventListeners();
     };
     
@@ -107,7 +100,7 @@ const Auth = (() => {
         }
 
         // Form Submissions with validation
-        const signInForm = document.querySelector('.sign-in-form');
+        const signInForm = document.getElementById('signInForm');
         if (signInForm) {
             signInForm.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -131,10 +124,13 @@ const Auth = (() => {
                 if (signInBtn) {
                     signInBtn.textContent = 'My Account';
                 }
+                
+                // Save user info
+                currentUser = { email };
             });
         }
         
-        const signUpForm = document.querySelector('.sign-up-form');
+        const signUpForm = document.getElementById('signUpForm');
         if (signUpForm) {
             signUpForm.addEventListener('submit', function(e) {
                 e.preventDefault();
@@ -163,6 +159,9 @@ const Auth = (() => {
                 if (signInTab) {
                     signInTab.click();
                 }
+                
+                // Save user info
+                currentUser = { name, email };
             });
         }
     };

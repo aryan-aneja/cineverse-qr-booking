@@ -119,11 +119,10 @@ const UI = (() => {
 
     // Generate payment QR code
     const generatePaymentQR = () => {
-        // In a real app, this would generate a QR code based on payment info
-        const totalAmount = document.getElementById('summaryAmount')?.textContent;
-        if (!totalAmount) return;
+        // Generate an actual QR code for payment
+        const totalAmount = document.getElementById('summaryAmount')?.textContent || '₹0';
+        const paymentQRUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=PAYMENT_${totalAmount.replace('₹', '')}_CINEVERSE`;
         
-        const paymentQRUrl = `https://placehold.co/200x200/1a1a2e/FFFFFF?text=UPI+Pay+${totalAmount.replace('₹', '')}`;
         const paymentQRCode = document.getElementById('paymentQRCode');
         if (paymentQRCode) {
             paymentQRCode.src = paymentQRUrl;
@@ -132,13 +131,15 @@ const UI = (() => {
 
     // Generate ticket QR code
     const generateTicketQR = () => {
-        // In a real app, this would generate a QR code based on ticket info
+        // Generate an actual QR code for ticket
         const bookingId = 'CIN' + Math.floor(Math.random() * 9000000 + 1000000);
-        const ticketQRUrl = `https://placehold.co/100x100/e84545/FFFFFF?text=${bookingId}`;
+        const ticketQRUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${bookingId}_CINEVERSE_TICKET`;
+        
         const ticketQRCode = document.getElementById('ticketQRCode');
         if (ticketQRCode) {
             ticketQRCode.src = ticketQRUrl;
         }
+        
         return bookingId;
     };
 
