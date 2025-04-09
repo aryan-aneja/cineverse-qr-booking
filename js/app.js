@@ -10,7 +10,28 @@ document.addEventListener('DOMContentLoaded', function() {
     Tickets.init();
     Auth.initAuthElements();
     Events.initEventListeners();
+    
+    // Check for existing elements and create if needed
+    ensureRequiredElements();
 });
+
+// Make sure all required elements are present in the DOM
+function ensureRequiredElements() {
+    // Ensure ticket-related elements exist
+    if (!document.getElementById('ticketsModal')) {
+        // Initialize tickets modal with any saved tickets
+        const savedTickets = Tickets.loadSavedTickets();
+        if (savedTickets.length > 0) {
+            UI.showTicketsModal(
+                savedTickets,
+                Tickets.renderTicketsList,
+                Tickets.downloadTicket
+            );
+            // Hide the modal after creating it
+            UI.closeModal('ticketsModal');
+        }
+    }
+}
 
 // Mock html2canvas function for ticket download
 window.html2canvas = function(element) {

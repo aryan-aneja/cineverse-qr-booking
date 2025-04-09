@@ -25,6 +25,8 @@ const UI = (() => {
         const convenienceFee = document.getElementById('convenienceFee');
         const totalAmount = document.getElementById('totalAmount');
         
+        if (!selectedSeatsLabel || !subtotalAmount || !convenienceFee || !totalAmount) return;
+        
         if (selectedSeats.length > 0) {
             // Update selected seats label
             const seatLabels = selectedSeats.map(seat => seat.id).join(', ');
@@ -51,44 +53,81 @@ const UI = (() => {
 
     // Update booking summary
     const updateBookingSummary = (selectedMovie, selectedTheater, currentLocation, selectedDate, selectedTime, selectedSeats) => {
-        document.getElementById('summaryMovie').textContent = selectedMovie;
-        document.getElementById('summaryTheater').textContent = selectedTheater + ' (' + currentLocation + ')';
+        const summaryMovie = document.getElementById('summaryMovie');
+        const summaryTheater = document.getElementById('summaryTheater');
+        const summaryDateTime = document.getElementById('summaryDateTime');
+        const summarySeats = document.getElementById('summarySeats');
+        const summaryAmount = document.getElementById('summaryAmount');
+        const qrAmount = document.getElementById('qrAmount');
         
-        const dateObj = new Date(selectedDate);
-        const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        document.getElementById('summaryDateTime').textContent = formattedDate + ', ' + selectedTime;
+        if (!summaryMovie || !summaryTheater || !summaryDateTime || !summarySeats || !summaryAmount || !qrAmount) return;
         
-        const seatLabels = selectedSeats.map(seat => seat.id).join(', ');
-        document.getElementById('summarySeats').textContent = seatLabels;
+        if (selectedMovie) summaryMovie.textContent = selectedMovie;
+        if (selectedTheater) summaryTheater.textContent = selectedTheater + ' (' + currentLocation + ')';
         
-        const total = selectedSeats.reduce((total, seat) => total + seat.price, 0);
-        const fee = Math.round(total * 0.08);
-        const finalTotal = total + fee;
-        document.getElementById('summaryAmount').textContent = '₹' + finalTotal;
-        document.getElementById('qrAmount').textContent = '₹' + finalTotal;
+        if (selectedDate) {
+            const dateObj = new Date(selectedDate);
+            const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            summaryDateTime.textContent = formattedDate + ', ' + selectedTime;
+        }
+        
+        if (selectedSeats && selectedSeats.length > 0) {
+            const seatLabels = selectedSeats.map(seat => seat.id).join(', ');
+            summarySeats.textContent = seatLabels;
+            
+            const total = selectedSeats.reduce((total, seat) => total + seat.price, 0);
+            const fee = Math.round(total * 0.08);
+            const finalTotal = total + fee;
+            summaryAmount.textContent = '₹' + finalTotal;
+            qrAmount.textContent = '₹' + finalTotal;
+        }
     };
 
     // Update ticket information
     const updateTicketInfo = (selectedMovie, selectedDate, selectedTime, selectedTheater, currentLocation, selectedSeats) => {
-        document.getElementById('ticketMovie').textContent = selectedMovie;
-        document.getElementById('ticketLanguage').textContent = document.getElementById('movieLanguage').textContent + ' • ' + document.getElementById('movieCertificate').textContent;
+        const ticketMovie = document.getElementById('ticketMovie');
+        const ticketLanguage = document.getElementById('ticketLanguage');
+        const ticketDateTime = document.getElementById('ticketDateTime');
+        const ticketVenue = document.getElementById('ticketVenue');
+        const ticketSeats = document.getElementById('ticketSeats');
+        const movieLanguage = document.getElementById('movieLanguage');
+        const movieCertificate = document.getElementById('movieCertificate');
         
-        const dateObj = new Date(selectedDate);
-        const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
-        document.getElementById('ticketDateTime').textContent = formattedDate + ', ' + selectedTime;
+        if (!ticketMovie || !ticketLanguage || !ticketDateTime || !ticketVenue || !ticketSeats) return;
         
-        document.getElementById('ticketVenue').textContent = selectedTheater + ' (' + currentLocation + ')';
+        if (selectedMovie) ticketMovie.textContent = selectedMovie;
         
-        const seatLabels = selectedSeats.map(seat => seat.id).join(', ');
-        document.getElementById('ticketSeats').textContent = seatLabels;
+        if (movieLanguage && movieCertificate) {
+            ticketLanguage.textContent = movieLanguage.textContent + ' • ' + movieCertificate.textContent;
+        }
+        
+        if (selectedDate) {
+            const dateObj = new Date(selectedDate);
+            const formattedDate = dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+            ticketDateTime.textContent = formattedDate + ', ' + selectedTime;
+        }
+        
+        if (selectedTheater) {
+            ticketVenue.textContent = selectedTheater + ' (' + currentLocation + ')';
+        }
+        
+        if (selectedSeats && selectedSeats.length > 0) {
+            const seatLabels = selectedSeats.map(seat => seat.id).join(', ');
+            ticketSeats.textContent = seatLabels;
+        }
     };
 
     // Generate payment QR code
     const generatePaymentQR = () => {
         // In a real app, this would generate a QR code based on payment info
-        const totalAmount = document.getElementById('summaryAmount').textContent;
+        const totalAmount = document.getElementById('summaryAmount')?.textContent;
+        if (!totalAmount) return;
+        
         const paymentQRUrl = `https://placehold.co/200x200/1a1a2e/FFFFFF?text=UPI+Pay+${totalAmount.replace('₹', '')}`;
-        document.getElementById('paymentQRCode').src = paymentQRUrl;
+        const paymentQRCode = document.getElementById('paymentQRCode');
+        if (paymentQRCode) {
+            paymentQRCode.src = paymentQRUrl;
+        }
     };
 
     // Generate ticket QR code
@@ -96,7 +135,10 @@ const UI = (() => {
         // In a real app, this would generate a QR code based on ticket info
         const bookingId = 'CIN' + Math.floor(Math.random() * 9000000 + 1000000);
         const ticketQRUrl = `https://placehold.co/100x100/e84545/FFFFFF?text=${bookingId}`;
-        document.getElementById('ticketQRCode').src = ticketQRUrl;
+        const ticketQRCode = document.getElementById('ticketQRCode');
+        if (ticketQRCode) {
+            ticketQRCode.src = ticketQRUrl;
+        }
         return bookingId;
     };
 
@@ -108,10 +150,15 @@ const UI = (() => {
         document.querySelectorAll('.seat:not(.booked)').forEach(seat => seat.classList.remove('selected'));
         
         // Reset step visibility
-        document.getElementById('step1').style.display = 'block';
-        document.getElementById('step2').style.display = 'none';
-        document.getElementById('step3').style.display = 'none';
-        document.getElementById('step4').style.display = 'none';
+        const step1 = document.getElementById('step1');
+        const step2 = document.getElementById('step2');
+        const step3 = document.getElementById('step3');
+        const step4 = document.getElementById('step4');
+        
+        if (step1) step1.style.display = 'block';
+        if (step2) step2.style.display = 'none';
+        if (step3) step3.style.display = 'none';
+        if (step4) step4.style.display = 'none';
         
         // Disable next buttons
         document.querySelectorAll('.next-step').forEach(btn => {
@@ -122,6 +169,7 @@ const UI = (() => {
     // Update next button state
     const updateNextButtonState = (stepId, selectedDate, selectedTime, selectedSeats) => {
         const nextBtn = document.querySelector(`#${stepId} .next-step`);
+        if (!nextBtn) return;
         
         if (stepId === 'step1') {
             nextBtn.disabled = !(selectedDate && selectedTime);
@@ -132,7 +180,7 @@ const UI = (() => {
 
     // Show/create the tickets modal
     const showTicketsModal = (bookedTickets, renderTicketsList, downloadTicket) => {
-        const ticketsModal = document.getElementById('ticketsModal');
+        let ticketsModal = document.getElementById('ticketsModal');
         
         if (!ticketsModal) {
             // Create tickets modal if it doesn't exist
@@ -152,54 +200,49 @@ const UI = (() => {
             document.body.insertAdjacentHTML('beforeend', ticketsModalHTML);
             
             // Get the newly created modal
-            const newTicketsModal = document.getElementById('ticketsModal');
+            ticketsModal = document.getElementById('ticketsModal');
             
             // Add close button functionality
-            const closeButton = newTicketsModal.querySelector('.close-modal');
-            closeButton.addEventListener('click', function() {
-                newTicketsModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
-            });
+            const closeButton = ticketsModal.querySelector('.close-modal');
+            if (closeButton) {
+                closeButton.addEventListener('click', function() {
+                    if (ticketsModal) {
+                        ticketsModal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            }
 
             // Close on outside click
-            newTicketsModal.addEventListener('click', function(event) {
-                if (event.target === newTicketsModal) {
-                    newTicketsModal.style.display = 'none';
+            ticketsModal.addEventListener('click', function(event) {
+                if (event.target === ticketsModal) {
+                    ticketsModal.style.display = 'none';
                     document.body.style.overflow = 'auto';
                 }
             });
+        }
 
+        // Update tickets list content or add new content
+        const ticketsListDiv = document.getElementById('ticketsList');
+        if (ticketsListDiv) {
+            ticketsListDiv.innerHTML = bookedTickets.length === 0 ? 
+                '<p>No tickets found. Book a movie to see your tickets here!</p>' : 
+                renderTicketsList();
+            
             // Add download functionality for each ticket
-            const downloadButtons = newTicketsModal.querySelectorAll('.download-ticket');
+            const downloadButtons = ticketsListDiv.querySelectorAll('.download-ticket');
             downloadButtons.forEach(button => {
                 button.addEventListener('click', function() {
                     const ticketId = this.getAttribute('data-ticket-id');
-                    downloadTicket(ticketId);
+                    if (ticketId) {
+                        downloadTicket(ticketId);
+                    }
                 });
             });
-            
-            // Show the modal
-            newTicketsModal.style.display = 'block';
-            document.body.style.overflow = 'hidden';
-        } else {
-            // Update tickets list content
-            const ticketsListDiv = document.getElementById('ticketsList');
-            if (ticketsListDiv) {
-                ticketsListDiv.innerHTML = bookedTickets.length === 0 ? 
-                    '<p>No tickets found. Book a movie to see your tickets here!</p>' : 
-                    renderTicketsList();
-                
-                // Re-add event listeners for download buttons
-                const downloadButtons = ticketsListDiv.querySelectorAll('.download-ticket');
-                downloadButtons.forEach(button => {
-                    button.addEventListener('click', function() {
-                        const ticketId = this.getAttribute('data-ticket-id');
-                        downloadTicket(ticketId);
-                    });
-                });
-            }
-            
-            // Show the modal
+        }
+        
+        // Show the modal
+        if (ticketsModal) {
             ticketsModal.style.display = 'block';
             document.body.style.overflow = 'hidden';
         }
@@ -281,13 +324,18 @@ const UI = (() => {
             document.querySelector('main').appendChild(theatresSection);
             
             // Add event listener to back button
-            document.getElementById('backToHome').addEventListener('click', function() {
-                theatresSection.style.display = 'none';
-                // Show all main sections again
-                mainSections.forEach(section => {
-                    section.style.display = 'block';
+            const backToHomeBtn = document.getElementById('backToHome');
+            if (backToHomeBtn) {
+                backToHomeBtn.addEventListener('click', function() {
+                    if (theatresSection) {
+                        theatresSection.style.display = 'none';
+                    }
+                    // Show all main sections again
+                    mainSections.forEach(section => {
+                        section.style.display = 'block';
+                    });
                 });
-            });
+            }
         } else {
             theatresSection.style.display = 'block';
         }
@@ -360,13 +408,18 @@ const UI = (() => {
             document.querySelector('main').appendChild(offersSection);
             
             // Add event listener to back button
-            document.getElementById('backToHomeOffers').addEventListener('click', function() {
-                offersSection.style.display = 'none';
-                // Show all main sections again
-                mainSections.forEach(section => {
-                    section.style.display = 'block';
+            const backToHomeOffersBtn = document.getElementById('backToHomeOffers');
+            if (backToHomeOffersBtn) {
+                backToHomeOffersBtn.addEventListener('click', function() {
+                    if (offersSection) {
+                        offersSection.style.display = 'none';
+                    }
+                    // Show all main sections again
+                    mainSections.forEach(section => {
+                        section.style.display = 'block';
+                    });
                 });
-            });
+            }
         } else {
             offersSection.style.display = 'block';
         }

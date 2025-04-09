@@ -24,7 +24,8 @@ const Events = (() => {
         navLinks.forEach(link => {
             link.addEventListener('click', function(e) {
                 e.preventDefault();
-                const target = this.getAttribute('href').substring(1); // Remove the # from the href
+                const target = this.getAttribute('href')?.substring(1); // Remove the # from the href
+                if (!target) return;
                 
                 // Handle special navigation cases
                 if (this.id === 'theatresLink') {
@@ -59,8 +60,30 @@ const Events = (() => {
             });
         }
 
-        // My Tickets button
-        const myTicketsBtn = document.getElementById('myTicketsBtn');
+        // My Tickets button - create if doesn't exist
+        createMyTicketsButton();
+    };
+
+    const createMyTicketsButton = () => {
+        // Check if button already exists
+        let myTicketsBtn = document.getElementById('myTicketsBtn');
+        
+        if (!myTicketsBtn) {
+            // Create My Tickets button if it doesn't exist
+            const navBarRight = document.querySelector('.navbar-right');
+            if (navBarRight) {
+                myTicketsBtn = document.createElement('a');
+                myTicketsBtn.id = 'myTicketsBtn';
+                myTicketsBtn.href = '#';
+                myTicketsBtn.className = 'btn btn-primary btn-sm ms-2';
+                myTicketsBtn.innerHTML = '<i class="fas fa-ticket me-1"></i> My Tickets';
+                
+                const signInBtn = document.getElementById('signInBtn');
+                navBarRight.insertBefore(myTicketsBtn, signInBtn);
+            }
+        }
+        
+        // Add event listener to button
         if (myTicketsBtn) {
             myTicketsBtn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -70,28 +93,6 @@ const Events = (() => {
                     Tickets.downloadTicket
                 );
             });
-        } else {
-            // Create My Tickets button if it doesn't exist
-            const navBarRight = document.querySelector('.navbar-right');
-            if (navBarRight) {
-                const myTicketsBtn = document.createElement('a');
-                myTicketsBtn.id = 'myTicketsBtn';
-                myTicketsBtn.href = '#';
-                myTicketsBtn.className = 'btn btn-primary btn-sm ms-2';
-                myTicketsBtn.innerHTML = '<i class="fas fa-ticket me-1"></i> My Tickets';
-                
-                const signInBtn = document.getElementById('signInBtn');
-                navBarRight.insertBefore(myTicketsBtn, signInBtn);
-                
-                myTicketsBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    UI.showTicketsModal(
-                        Tickets.getBookedTickets(),
-                        Tickets.renderTicketsList,
-                        Tickets.downloadTicket
-                    );
-                });
-            }
         }
     };
 
@@ -100,15 +101,31 @@ const Events = (() => {
         const bookTicketButtons = document.querySelectorAll('.btn-book');
         bookTicketButtons.forEach(button => {
             button.addEventListener('click', function() {
-                const movieId = this.getAttribute('data-id');
                 const movieCard = this.closest('.movie-card');
-                const movieTitle = movieCard.querySelector('h3').textContent;
-                const movieInfo = movieCard.querySelector('p').textContent;
+                if (!movieCard) return;
+                
+                const movieTitle = movieCard.querySelector('h3')?.textContent;
+                const movieInfo = movieCard.querySelector('p')?.textContent;
+                
+                if (!movieTitle || !movieInfo) return;
                 
                 // Set movie information in booking modal
-                document.getElementById('selectedMovieTitle').textContent = movieTitle;
-                document.getElementById('movieLanguage').textContent = movieInfo.split('•')[0].trim();
-                document.getElementById('movieGenre').textContent = movieInfo.split('•')[1].trim();
+                const selectedMovieTitle = document.getElementById('selectedMovieTitle');
+                const movieLanguageEl = document.getElementById('movieLanguage');
+                const movieGenreEl = document.getElementById('movieGenre');
+                
+                if (selectedMovieTitle) selectedMovieTitle.textContent = movieTitle;
+                
+                if (movieLanguageEl && movieInfo.includes('•')) {
+                    movieLanguageEl.textContent = movieInfo.split('•')[0].trim();
+                }
+                
+                if (movieGenreEl && movieInfo.includes('•')) {
+                    const parts = movieInfo.split('•');
+                    if (parts.length > 1) {
+                        movieGenreEl.textContent = parts[1].trim();
+                    }
+                }
                 
                 // Reset booking form
                 Tickets.resetBookingState();
@@ -249,7 +266,7 @@ const Events = (() => {
         const locationDropdown = document.getElementById('locationDropdown');
         const selectedLocationText = document.getElementById('selectedLocation');
         
-        if (locationBtn) {
+        if (locationBtn && locationDropdown) {
             locationBtn.addEventListener('click', function(e) {
                 e.stopPropagation();
                 locationDropdown.style.display = locationDropdown.style.display === 'block' ? 'none' : 'block';
@@ -275,11 +292,15 @@ const Events = (() => {
         locationItems.forEach(item => {
             item.addEventListener('click', function() {
                 const newLocation = this.getAttribute('data-location');
-                Tickets.setCurrentLocation(newLocation);
-                if (selectedLocationText) {
-                    selectedLocationText.textContent = newLocation;
+                if (newLocation) {
+                    Tickets.setCurrentLocation(newLocation);
+                    if (selectedLocationText) {
+                        selectedLocationText.textContent = newLocation;
+                    }
+                    if (locationDropdown) {
+                        locationDropdown.style.display = 'none';
+                    }
                 }
-                locationDropdown.style.display = 'none';
             });
         });
     };
@@ -289,6 +310,9 @@ const Events = (() => {
         const dateItems = document.querySelectorAll('.date-item');
         dateItems.forEach(item => {
             item.addEventListener('click', function() {
+                const dateValue = this.getAttribute('data-date');
+                if (!dateValue) return;
+                
                 // Remove active class from all dates
                 dateItems.forEach(date => date.classList.remove('active'));
                 
@@ -296,7 +320,7 @@ const Events = (() => {
                 this.classList.add('active');
                 
                 // Store selected date
-                Tickets.setSelectedDate(this.getAttribute('data-date'));
+                Tickets.setSelectedDate(dateValue);
                 
                 // Check if we can enable the next button
                 UI.updateNextButtonState('step1', Tickets.getSelectedDate(), Tickets.getSelectedTime(), []);
@@ -307,6 +331,10 @@ const Events = (() => {
         const timeButtons = document.querySelectorAll('.time-btn');
         timeButtons.forEach(button => {
             button.addEventListener('click', function() {
+                const timeValue = this.getAttribute('data-time');
+                const timeOptionsContainer = this.closest('.time-options');
+                if (!timeValue || !timeOptionsContainer) return;
+                
                 // Remove active class from all time buttons
                 timeButtons.forEach(btn => btn.classList.remove('active'));
                 
@@ -314,8 +342,12 @@ const Events = (() => {
                 this.classList.add('active');
                 
                 // Store selected time and theater
-                Tickets.setSelectedTime(this.getAttribute('data-time'));
-                Tickets.setSelectedTheater(this.closest('.time-options').previousElementSibling.textContent);
+                Tickets.setSelectedTime(timeValue);
+                
+                const theaterElement = timeOptionsContainer.previousElementSibling;
+                if (theaterElement && theaterElement.textContent) {
+                    Tickets.setSelectedTheater(theaterElement.textContent);
+                }
                 
                 // Check if we can enable the next button
                 UI.updateNextButtonState('step1', Tickets.getSelectedDate(), Tickets.getSelectedTime(), []);
@@ -327,10 +359,12 @@ const Events = (() => {
         const seats = document.querySelectorAll('.seat:not(.booked)');
         seats.forEach(seat => {
             seat.addEventListener('click', function() {
+                const seatId = this.getAttribute('data-seat');
+                if (!seatId) return;
+                
                 // Toggle selected class
                 this.classList.toggle('selected');
                 
-                const seatId = this.getAttribute('data-seat');
                 const isPremium = this.classList.contains('premium');
                 
                 if (this.classList.contains('selected')) {
@@ -355,13 +389,14 @@ const Events = (() => {
         const paymentMethods = document.querySelectorAll('.payment-method');
         paymentMethods.forEach(method => {
             method.addEventListener('click', function() {
+                const paymentMethod = this.getAttribute('data-method');
+                if (!paymentMethod) return;
+                
                 // Remove active class from all methods
                 paymentMethods.forEach(m => m.classList.remove('active'));
                 
                 // Add active class to clicked method
                 this.classList.add('active');
-                
-                const paymentMethod = this.getAttribute('data-method');
                 
                 // Hide all payment forms
                 document.querySelectorAll('.payment-form').forEach(form => {
@@ -369,7 +404,10 @@ const Events = (() => {
                 });
                 
                 // Show selected payment form
-                document.getElementById(paymentMethod + '-payment').style.display = 'block';
+                const paymentForm = document.getElementById(paymentMethod + '-payment');
+                if (paymentForm) {
+                    paymentForm.style.display = 'block';
+                }
             });
         });
     };
@@ -377,15 +415,14 @@ const Events = (() => {
     const setupSearchFunctionality = () => {
         // Search functionality
         const searchInput = document.getElementById('searchInput');
-        const movieCards = document.querySelectorAll('.movie-card');
-        
         if (searchInput) {
             searchInput.addEventListener('input', function() {
                 const searchTerm = this.value.toLowerCase();
+                const movieCards = document.querySelectorAll('.movie-card');
                 
                 movieCards.forEach(card => {
-                    const title = card.querySelector('h3').textContent.toLowerCase();
-                    const info = card.querySelector('p').textContent.toLowerCase();
+                    const title = card.querySelector('h3')?.textContent?.toLowerCase() || '';
+                    const info = card.querySelector('p')?.textContent?.toLowerCase() || '';
                     
                     if (title.includes(searchTerm) || info.includes(searchTerm)) {
                         card.style.display = 'block';
@@ -404,17 +441,19 @@ const Events = (() => {
         
         filterButtons.forEach(button => {
             button.addEventListener('click', function() {
+                const filter = this.getAttribute('data-filter');
+                if (!filter) return;
+                
                 // Remove active class from all buttons
                 filterButtons.forEach(btn => btn.classList.remove('active'));
                 
                 // Add active class to clicked button
                 this.classList.add('active');
                 
-                const filter = this.getAttribute('data-filter');
-                
                 // Filter movies
                 movieCards.forEach(card => {
-                    if (filter === 'all' || card.getAttribute('data-lang') === filter) {
+                    const cardLang = card.getAttribute('data-lang');
+                    if (filter === 'all' || cardLang === filter) {
                         card.style.display = 'block';
                     } else {
                         card.style.display = 'none';
@@ -427,11 +466,11 @@ const Events = (() => {
     const setupSliderNavigation = () => {
         // Coming soon slider navigation
         const sliderNavButtons = document.querySelectorAll('.slider-nav');
+        const slider = document.querySelector('.slider-container');
         
-        if (sliderNavButtons) {
+        if (sliderNavButtons.length > 0 && slider) {
             sliderNavButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    const slider = document.querySelector('.slider-container');
                     const scrollAmount = slider.clientWidth;
                     
                     if (this.classList.contains('prev')) {

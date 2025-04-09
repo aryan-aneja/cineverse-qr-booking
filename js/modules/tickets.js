@@ -54,7 +54,7 @@ const Tickets = (() => {
         }
     };
 
-    // Download ticket
+    // Download ticket as HTML file
     const downloadTicket = (ticketId) => {
         const ticket = bookedTickets.find(t => t.bookingId === ticketId);
         if (!ticket) return;

@@ -17,6 +17,9 @@ const Auth = (() => {
     
     const setupEventListeners = () => {
         // Sign In button functionality
+        const signInBtn = document.getElementById('signInBtn');
+        const signInModal = document.getElementById('signInModal');
+        
         if (signInBtn) {
             signInBtn.addEventListener('click', function(e) {
                 e.preventDefault();
@@ -28,6 +31,9 @@ const Auth = (() => {
         }
         
         // Auth tabs functionality
+        const authTabs = document.querySelectorAll('.auth-tab');
+        const authForms = document.querySelectorAll('.auth-form');
+        
         authTabs.forEach(tab => {
             tab.addEventListener('click', function() {
                 // Remove active class from all tabs
@@ -42,29 +48,38 @@ const Auth = (() => {
                 
                 // Show the corresponding form
                 const tabTarget = this.getAttribute('data-tab');
-                document.getElementById(tabTarget + 'Form').classList.add('active');
+                const targetForm = document.getElementById(tabTarget + 'Form');
+                if (targetForm) {
+                    targetForm.classList.add('active');
+                }
             });
         });
         
         // Toggle password visibility
+        const togglePasswordButtons = document.querySelectorAll('.toggle-password');
         togglePasswordButtons.forEach(button => {
             button.addEventListener('click', function() {
                 const passwordInput = this.previousElementSibling;
-                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-                passwordInput.setAttribute('type', type);
-                
-                // Toggle eye icon
-                this.classList.toggle('fa-eye');
-                this.classList.toggle('fa-eye-slash');
+                if (passwordInput) {
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    // Toggle eye icon
+                    this.classList.toggle('fa-eye');
+                    this.classList.toggle('fa-eye-slash');
+                }
             });
         });
         
         // Password strength meter
+        const signUpPasswordInput = document.getElementById('signUpPassword');
         if (signUpPasswordInput) {
             signUpPasswordInput.addEventListener('input', function() {
                 const password = this.value;
                 const strengthProgress = document.getElementById('passwordStrength');
                 const strengthText = document.getElementById('strengthText');
+                
+                if (!strengthProgress || !strengthText) return;
                 
                 // Calculate password strength
                 let strength = 0;
@@ -107,8 +122,10 @@ const Auth = (() => {
                 
                 // Mock sign in (in a real app, this would call an API)
                 alert('Sign in successful!');
-                signInModal.style.display = 'none';
-                document.body.style.overflow = 'auto';
+                if (signInModal) {
+                    signInModal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
                 
                 // Update UI to show logged in state (simplified for this example)
                 if (signInBtn) {
@@ -121,11 +138,11 @@ const Auth = (() => {
         if (signUpForm) {
             signUpForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const name = document.getElementById('signUpName').value;
-                const email = document.getElementById('signUpEmail').value;
-                const phone = document.getElementById('signUpPhone').value;
-                const password = document.getElementById('signUpPassword').value;
-                const terms = document.getElementById('termsConditions').checked;
+                const name = document.getElementById('signUpName')?.value;
+                const email = document.getElementById('signUpEmail')?.value;
+                const phone = document.getElementById('signUpPhone')?.value;
+                const password = document.getElementById('signUpPassword')?.value;
+                const terms = document.getElementById('termsConditions')?.checked;
                 
                 // Basic validation
                 if (!name || !email || !phone || !password) {
@@ -142,7 +159,10 @@ const Auth = (() => {
                 alert('Account created successfully! Please check your email to verify your account.');
                 
                 // Switch to Sign In tab after successful signup
-                document.querySelector('[data-tab="signIn"]').click();
+                const signInTab = document.querySelector('[data-tab="signIn"]');
+                if (signInTab) {
+                    signInTab.click();
+                }
             });
         }
     };
