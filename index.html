@@ -5,13 +5,180 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lovable App</title>
+    <title>Cinema Booking App</title>
     <link href="styles.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css">
   </head>
   <body>
-    <div id="root"></div>
+    <header>
+      <div class="navbar">
+        <div class="logo">
+          <h1>Cinema<span>Book</span></h1>
+        </div>
+        <nav>
+          <ul>
+            <li><a href="#" class="active">Home</a></li>
+            <li><a href="#">Movies</a></li>
+            <li><a href="#">Theaters</a></li>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+          </ul>
+        </nav>
+        <div class="nav-buttons">
+          <button class="btn btn-secondary btn-location">
+            <i class="fas fa-map-marker-alt icon-location"></i>
+            Location
+          </button>
+          <button id="signInBtn" class="btn btn-primary">Sign In</button>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero-banner">
+        <div class="hero-content">
+          <h2>Experience Premium Cinema</h2>
+          <p>Book your tickets now for the latest movies with best-in-class comfort and technology.</p>
+          <button class="btn btn-primary btn-large">Book Now</button>
+        </div>
+      </section>
+
+      <section class="now-showing">
+        <div class="section-header">
+          <h2>Now Showing</h2>
+          <div class="filters">
+            <button class="filter-btn active">All</button>
+            <button class="filter-btn">Action</button>
+            <button class="filter-btn">Comedy</button>
+            <button class="filter-btn">Drama</button>
+            <button class="filter-btn">Horror</button>
+          </div>
+        </div>
+        <div class="movie-list" id="movieList">
+          <!-- Movie cards will be dynamically inserted here -->
+        </div>
+      </section>
+
+      <section class="coming-soon">
+        <div class="section-header">
+          <h2>Coming Soon</h2>
+        </div>
+        <div class="coming-soon-slider">
+          <button class="slider-nav prev">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <button class="slider-nav next">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+          <div class="slider-container" id="comingSoonSlider">
+            <!-- Coming soon movies will be dynamically inserted here -->
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Sign In Modal -->
+    <div id="signInModal" class="modal">
+      <div class="modal-content sign-in-content">
+        <span class="close-modal" onclick="closeModal('signInModal')">&times;</span>
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="signIn">Sign In</button>
+          <button class="auth-tab" data-tab="signUp">Sign Up</button>
+        </div>
+        
+        <form id="signInForm" class="auth-form active">
+          <div class="form-animation">
+            <h2>Welcome Back</h2>
+            <div class="form-group">
+              <div class="input-with-icon">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="signInEmail" placeholder="Email Address" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-with-icon">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="signInPassword" placeholder="Password" required>
+                <i class="fas fa-eye-slash toggle-password"></i>
+              </div>
+            </div>
+            <div class="form-options">
+              <div class="remember-me">
+                <input type="checkbox" id="rememberMe">
+                <label for="rememberMe">Remember me</label>
+              </div>
+              <a href="#" class="forgot-password">Forgot password?</a>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Sign In</button>
+            </div>
+            <div class="social-signin">
+              <p>Or sign in with</p>
+              <div class="social-buttons">
+                <button type="button" class="social-btn google">
+                  <i class="fab fa-google"></i>
+                </button>
+                <button type="button" class="social-btn facebook">
+                  <i class="fab fa-facebook-f"></i>
+                </button>
+                <button type="button" class="social-btn twitter">
+                  <i class="fab fa-twitter"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </form>
+        
+        <form id="signUpForm" class="auth-form">
+          <div class="form-animation">
+            <h2>Create Account</h2>
+            <div class="form-group">
+              <div class="input-with-icon">
+                <i class="fas fa-user"></i>
+                <input type="text" id="signUpName" placeholder="Full Name" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-with-icon">
+                <i class="fas fa-envelope"></i>
+                <input type="email" id="signUpEmail" placeholder="Email Address" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-with-icon">
+                <i class="fas fa-phone"></i>
+                <input type="tel" id="signUpPhone" placeholder="Phone Number" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="input-with-icon">
+                <i class="fas fa-lock"></i>
+                <input type="password" id="signUpPassword" placeholder="Password" required>
+                <i class="fas fa-eye-slash toggle-password"></i>
+              </div>
+              <div class="password-strength">
+                <div class="strength-bar">
+                  <div id="passwordStrength" class="strength-progress"></div>
+                </div>
+                <span id="strengthText">Weak</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="terms-conditions">
+                <input type="checkbox" id="termsConditions" required>
+                <label for="termsConditions">I agree to the <a href="#">Terms & Conditions</a> and <a href="#">Privacy Policy</a></label>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary">Sign Up</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    
     <!-- Required Lovable script tag -->
     <script src="https://cdn.gpteng.co/gptengineer.js" type="module"></script>
-    <script type="module" src="/src/main.tsx"></script>
+    <script src="main.js"></script>
   </body>
 </html>
