@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,25 +43,6 @@
                             <div class="location-item" data-location="Bangalore">Bangalore</div>
                             <div class="location-item" data-location="Chennai">Chennai</div>
                             <div class="location-item" data-location="Hyderabad">Hyderabad</div>
-                        </div>
-                    </div>
-                    
-                    <!-- Tickets Menu -->
-                    <div class="tickets-menu-container">
-                        <button id="ticketsMenuBtn" class="tickets-menu-button">
-                            <i class="fas fa-ticket-alt"></i>
-                            <span>My Tickets</span>
-                        </button>
-                        <div id="ticketsDropdown" class="tickets-dropdown">
-                            <div class="tickets-dropdown-header">
-                                <h4>Recent Tickets</h4>
-                            </div>
-                            <div id="ticketsDropdownContent" class="tickets-dropdown-content">
-                                <!-- Tickets will be populated here by JavaScript -->
-                            </div>
-                            <div class="tickets-dropdown-footer">
-                                <button id="viewAllTicketsBtn" class="view-all-tickets">View All Tickets</button>
-                            </div>
                         </div>
                     </div>
                     
@@ -1052,30 +1034,8 @@
                 </form>
             </div>
         </div>
-
-        <!-- Tickets Modal -->
-        <div id="ticketsModal" class="modal">
-            <div class="modal-content">
-                <span class="close-modal">&times;</span>
-                
-                <div class="tickets-modal-container">
-                    <h2>Your Tickets</h2>
-                    
-                    <div id="ticketsList" class="tickets-list">
-                        <!-- Tickets will be populated here by JavaScript -->
-                    </div>
-                    
-                    <div class="tickets-empty-state" id="ticketsEmptyState" style="display:none;">
-                        <i class="fas fa-ticket-alt"></i>
-                        <h3>No Tickets Found</h3>
-                        <p>You haven't purchased any tickets yet. Browse movies and book your first ticket!</p>
-                        <button class="btn btn-primary" id="browseMoviesBtn">Browse Movies</button>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
-    <script src="js/app.js" type="module"></script>
+    <script src="app.js"></script>
 </body>
 </html>
