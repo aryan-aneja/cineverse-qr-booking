@@ -1,3 +1,4 @@
+
 // Events module for handling event listeners
 import Auth from './auth.js';
 import Tickets from './tickets.js';
@@ -15,7 +16,6 @@ const Events = (() => {
         setupSearchFunctionality();
         setupMovieFilter();
         setupSliderNavigation();
-        setupTicketsMenu(); // Add new tickets menu setup
     };
 
     const setupNavigation = () => {
@@ -485,130 +485,6 @@ const Events = (() => {
                 });
             });
         }
-    };
-
-    const setupTicketsMenu = () => {
-        // Create tickets menu button if it doesn't exist
-        const navbarRight = document.querySelector('.navbar-right');
-        let ticketsMenuBtn = document.getElementById('ticketsMenuBtn');
-        
-        if (!ticketsMenuBtn && navbarRight) {
-            ticketsMenuBtn = document.createElement('div');
-            ticketsMenuBtn.id = 'ticketsMenuBtn';
-            ticketsMenuBtn.className = 'tickets-menu-container';
-            
-            // Create button and dropdown
-            ticketsMenuBtn.innerHTML = `
-                <button class="tickets-menu-button">
-                    <i class="fas fa-ticket-alt"></i> My Tickets
-                    <i class="fas fa-chevron-down ms-1"></i>
-                </button>
-                <div class="tickets-dropdown">
-                    <div class="tickets-dropdown-header">
-                        <h4>Your Tickets</h4>
-                    </div>
-                    <div class="tickets-dropdown-content" id="ticketsMenuContent">
-                        <p class="empty-tickets">No tickets found</p>
-                    </div>
-                    <div class="tickets-dropdown-footer">
-                        <button class="view-all-tickets">View All Tickets</button>
-                    </div>
-                </div>
-            `;
-            
-            // Insert before sign in button
-            const signInBtn = document.getElementById('signInBtn');
-            if (signInBtn) {
-                navbarRight.insertBefore(ticketsMenuBtn, signInBtn);
-            } else {
-                navbarRight.appendChild(ticketsMenuBtn);
-            }
-
-            // Add click event to toggle dropdown
-            const menuButton = ticketsMenuBtn.querySelector('.tickets-menu-button');
-            const dropdown = ticketsMenuBtn.querySelector('.tickets-dropdown');
-            
-            if (menuButton && dropdown) {
-                // Toggle dropdown when clicking the button
-                menuButton.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    dropdown.classList.toggle('show');
-                    
-                    // If opening dropdown, populate with tickets
-                    if (dropdown.classList.contains('show')) {
-                        updateTicketsMenuContent();
-                    }
-                });
-                
-                // Hide dropdown when clicking outside
-                document.addEventListener('click', () => {
-                    dropdown.classList.remove('show');
-                });
-                
-                // Prevent dropdown from closing when clicking inside
-                dropdown.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                });
-                
-                // View all tickets button
-                const viewAllBtn = ticketsMenuBtn.querySelector('.view-all-tickets');
-                if (viewAllBtn) {
-                    viewAllBtn.addEventListener('click', () => {
-                        dropdown.classList.remove('show');
-                        UI.showTicketsModal(
-                            Tickets.getBookedTickets(),
-                            Tickets.renderTicketsList,
-                            Tickets.downloadTicket
-                        );
-                    });
-                }
-            }
-        }
-    };
-
-    const updateTicketsMenuContent = () => {
-        const ticketsContent = document.getElementById('ticketsMenuContent');
-        if (!ticketsContent) return;
-        
-        const tickets = Tickets.getBookedTickets();
-        
-        if (tickets.length === 0) {
-            ticketsContent.innerHTML = '<p class="empty-tickets">No tickets found</p>';
-            return;
-        }
-        
-        // Show limited number of tickets in dropdown
-        const maxTickets = 3;
-        const ticketsToShow = tickets.slice(0, maxTickets);
-        
-        let html = '';
-        ticketsToShow.forEach(ticket => {
-            html += `
-                <div class="ticket-menu-item">
-                    <div class="ticket-menu-info">
-                        <h5>${ticket.movie}</h5>
-                        <p>${ticket.date}, ${ticket.time}</p>
-                        <p>${ticket.theater} (${ticket.location})</p>
-                    </div>
-                    <button class="ticket-menu-download" data-ticket-id="${ticket.bookingId}">
-                        <i class="fas fa-download"></i>
-                    </button>
-                </div>
-            `;
-        });
-        
-        ticketsContent.innerHTML = html;
-        
-        // Add download button event listeners
-        const downloadButtons = ticketsContent.querySelectorAll('.ticket-menu-download');
-        downloadButtons.forEach(button => {
-            button.addEventListener('click', function() {
-                const ticketId = this.getAttribute('data-ticket-id');
-                if (ticketId) {
-                    Tickets.downloadTicket(ticketId);
-                }
-            });
-        });
     };
 
     return {
