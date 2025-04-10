@@ -1,3 +1,4 @@
+
 /* Global Styles */
 :root {
   --primary-color: #e84545;
@@ -8,6 +9,8 @@
   --gray-color: #8e9196;
   --light-gray: #f6f6f6;
   --premium-color: #d4af37;
+  --box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
 }
 
 * {
@@ -36,7 +39,7 @@ body {
   border-radius: 4px;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition);
   border: none;
   outline: none;
 }
@@ -48,6 +51,8 @@ body {
 
 .btn-primary:hover {
   background-color: #d82c2c;
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow);
 }
 
 .btn-secondary {
@@ -58,21 +63,25 @@ body {
 
 .btn-secondary:hover {
   background-color: var(--light-gray);
+  transform: translateY(-2px);
 }
 
 .btn-large {
   padding: 14px 28px;
   font-size: 18px;
+  letter-spacing: 0.5px;
 }
 
 .btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none !important;
 }
 
 .btn-book {
   width: 100%;
   margin-top: 12px;
+  transition: var(--transition);
 }
 
 .btn-location {
@@ -108,6 +117,7 @@ header {
 .logo h1 {
   font-size: 24px;
   font-weight: 700;
+  cursor: pointer;
 }
 
 .logo span {
@@ -128,10 +138,26 @@ nav ul li a {
   color: var(--dark-color);
   font-weight: 500;
   transition: color 0.3s ease;
+  position: relative;
 }
 
 nav ul li a:hover, nav ul li a.active {
   color: var(--primary-color);
+}
+
+nav ul li a:after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  background: var(--primary-color);
+  left: 0;
+  bottom: -5px;
+  transition: width 0.3s ease;
+}
+
+nav ul li a:hover:after, nav ul li a.active:after {
+  width: 100%;
 }
 
 .nav-buttons {
@@ -148,15 +174,24 @@ nav ul li a:hover, nav ul li a.active {
   border-radius: 4px;
   overflow: hidden;
   width: 300px;
+  transition: var(--transition);
+  border: 1px solid transparent;
+}
+
+.search-container:hover,
+.search-container:focus-within {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(232, 69, 69, 0.1);
 }
 
 .search-input {
   flex: 1;
   border: none;
-  padding: 10px 15px;
+  padding: 12px 15px;
   font-family: 'Poppins', sans-serif;
   background-color: var(--light-gray);
   outline: none;
+  font-size: 14px;
 }
 
 .search-btn {
@@ -164,6 +199,12 @@ nav ul li a:hover, nav ul li a.active {
   border: none;
   padding: 10px 15px;
   cursor: pointer;
+  color: var(--gray-color);
+  transition: var(--transition);
+}
+
+.search-btn:hover {
+  color: var(--primary-color);
 }
 
 /* Location Selector Styles */
@@ -177,20 +218,32 @@ nav ul li a:hover, nav ul li a.active {
   left: 0;
   background-color: var(--light-color);
   border-radius: 4px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--box-shadow);
   width: 150px;
   z-index: 10;
   display: none;
+  margin-top: 5px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.location-dropdown.show {
+  display: block;
 }
 
 .location-item {
-  padding: 10px 15px;
+  padding: 12px 15px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .location-item:hover {
   background-color: var(--light-gray);
+  color: var(--primary-color);
 }
 
 /* Hero Banner Styles */
@@ -204,6 +257,12 @@ nav ul li a:hover, nav ul li a.active {
   justify-content: center;
   text-align: center;
   color: var(--light-color);
+  animation: fadeInBanner 1s ease-out;
+}
+
+@keyframes fadeInBanner {
+  from { opacity: 0.6; }
+  to { opacity: 1; }
 }
 
 .hero-content {
@@ -215,11 +274,22 @@ nav ul li a:hover, nav ul li a.active {
   font-size: 48px;
   font-weight: 700;
   margin-bottom: 20px;
+  animation: slideUp 1s ease-out;
 }
 
 .hero-content p {
   font-size: 20px;
   margin-bottom: 30px;
+  animation: slideUp 1.2s ease-out;
+}
+
+.hero-content .btn {
+  animation: slideUp 1.4s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* Movie Section Styles */
@@ -235,8 +305,22 @@ nav ul li a:hover, nav ul li a.active {
 }
 
 .section-header h2 {
-  font-size: 30px;
+  font-size: 32px;
   font-weight: 600;
+  position: relative;
+  padding-left: 15px;
+}
+
+.section-header h2:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 25px;
+  background-color: var(--primary-color);
+  border-radius: 3px;
 }
 
 .filters {
@@ -250,13 +334,16 @@ nav ul li a:hover, nav ul li a.active {
   padding: 8px 16px;
   border-radius: 20px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition);
+  font-size: 14px;
 }
 
 .filter-btn.active, .filter-btn:hover {
   background-color: var(--primary-color);
   color: var(--light-color);
   border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow);
 }
 
 /* Movie Cards Styles */
@@ -268,25 +355,34 @@ nav ul li a:hover, nav ul li a.active {
 
 .movie-card {
   background-color: var(--light-color);
-  border-radius: 8px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  transition: transform 0.3s ease;
+  box-shadow: var(--box-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeIn 0.5s ease-out;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
 .movie-card:hover {
-  transform: translateY(-5px);
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .movie-poster {
   position: relative;
   height: 370px;
+  overflow: hidden;
 }
 
 .movie-poster img {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.movie-card:hover .movie-poster img {
+  transform: scale(1.05);
 }
 
 .movie-rating {
@@ -295,12 +391,13 @@ nav ul li a:hover, nav ul li a.active {
   left: 10px;
   background-color: var(--secondary-color);
   color: var(--light-color);
-  padding: 3px 10px;
-  border-radius: 4px;
+  padding: 5px 12px;
+  border-radius: 30px;
   display: flex;
   align-items: center;
   gap: 5px;
   font-weight: 500;
+  font-size: 14px;
 }
 
 .movie-rating i {
@@ -308,12 +405,13 @@ nav ul li a:hover, nav ul li a.active {
 }
 
 .movie-info {
-  padding: 15px;
+  padding: 20px;
 }
 
 .movie-info h3 {
-  font-size: 18px;
-  margin-bottom: 5px;
+  font-size: 20px;
+  margin-bottom: 8px;
+  font-weight: 600;
 }
 
 .movie-info p {
@@ -325,6 +423,7 @@ nav ul li a:hover, nav ul li a.active {
 /* Coming Soon Slider Styles */
 .coming-soon-slider {
   position: relative;
+  margin: 20px 0;
 }
 
 .slider-container {
@@ -333,7 +432,7 @@ nav ul li a:hover, nav ul li a.active {
   scroll-behavior: smooth;
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE/Edge */
-  padding: 10px 0;
+  padding: 20px 10px;
   gap: 20px;
 }
 
@@ -344,15 +443,27 @@ nav ul li a:hover, nav ul li a.active {
 .slider-item {
   flex: 0 0 300px;
   background-color: var(--light-color);
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--box-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.slider-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .slider-item img {
   width: 100%;
   height: 170px;
   object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.slider-item:hover img {
+  transform: scale(1.05);
 }
 
 .slider-info {
@@ -361,11 +472,13 @@ nav ul li a:hover, nav ul li a.active {
 
 .slider-info h4 {
   margin-bottom: 5px;
+  font-size: 18px;
 }
 
 .slider-info p {
   color: var(--primary-color);
   font-size: 14px;
+  font-weight: 500;
 }
 
 .slider-nav {
@@ -384,11 +497,12 @@ nav ul li a:hover, nav ul li a.active {
   cursor: pointer;
   z-index: 1;
   opacity: 0.7;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, transform 0.3s ease;
 }
 
 .slider-nav:hover {
   opacity: 1;
+  transform: translateY(-50%) scale(1.1);
 }
 
 .slider-nav.prev {
@@ -408,24 +522,32 @@ nav ul li a:hover, nav ul li a.active {
 
 .offer-card {
   background-color: var(--light-color);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 20px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--box-shadow);
   display: flex;
   align-items: center;
   gap: 15px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.offer-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .offer-icon img {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  border-radius: 10px;
   object-fit: cover;
 }
 
 .offer-content h3 {
   color: var(--primary-color);
   margin-bottom: 5px;
+  font-size: 20px;
 }
 
 .offer-content p {
@@ -443,27 +565,36 @@ nav ul li a:hover, nav ul li a.active {
 .feature {
   background-color: var(--light-color);
   padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: var(--box-shadow);
   text-align: center;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.05);
 }
 
 .feature:hover {
-  transform: translateY(-5px);
+  transform: translateY(-10px);
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
 }
 
 .feature-icon {
-  font-size: 36px;
-  margin-bottom: 15px;
+  font-size: 40px;
+  margin-bottom: 20px;
+  color: var(--primary-color);
+  transition: transform 0.3s ease;
+}
+
+.feature:hover .feature-icon {
+  transform: scale(1.2);
 }
 
 .feature h3 {
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  font-size: 22px;
 }
 
 .feature p {
-  font-size: 14px;
+  font-size: 15px;
   color: var(--gray-color);
 }
 
@@ -482,8 +613,8 @@ footer {
 }
 
 .footer-logo h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
+  font-size: 28px;
+  margin-bottom: 15px;
 }
 
 .footer-logo span {
@@ -493,6 +624,7 @@ footer {
 .footer-logo p {
   max-width: 300px;
   color: var(--gray-color);
+  line-height: 1.7;
 }
 
 .footer-links {
@@ -501,8 +633,9 @@ footer {
 }
 
 .link-group h4 {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   font-weight: 600;
+  font-size: 18px;
 }
 
 .link-group ul {
@@ -510,17 +643,25 @@ footer {
 }
 
 .link-group ul li {
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
 
 .link-group ul li a {
   color: var(--gray-color);
   text-decoration: none;
   transition: color 0.3s ease;
+  position: relative;
+  padding-left: 0;
+  transition: padding-left 0.3s ease, color 0.3s ease;
 }
 
 .link-group ul li a:hover {
   color: var(--primary-color);
+  padding-left: 5px;
+}
+
+.link-group ul li a i {
+  margin-right: 8px;
 }
 
 .copyright {
@@ -540,6 +681,14 @@ footer {
   width: 100%;
   height: 100%;
   background-color: rgba(26, 26, 46, 0.9);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  overflow-y: auto;
+}
+
+.modal.show {
+  display: block;
+  opacity: 1;
 }
 
 .modal-content {
@@ -551,6 +700,14 @@ footer {
   margin: 5vh auto;
   overflow-y: auto;
   position: relative;
+  animation: modalFadeIn 0.5s ease-out;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .close-modal {
@@ -561,12 +718,19 @@ footer {
   font-weight: bold;
   cursor: pointer;
   z-index: 10;
+  color: var(--dark-color);
+  transition: color 0.3s ease;
+}
+
+.close-modal:hover {
+  color: var(--primary-color);
 }
 
 /* Auth Modal Styles */
 .sign-in-content {
   max-width: 450px;
   overflow: hidden;
+  border-radius: 12px;
 }
 
 .auth-tabs {
@@ -578,7 +742,7 @@ footer {
 
 .auth-tab {
   flex: 1;
-  padding: 15px;
+  padding: 18px;
   text-align: center;
   font-weight: 500;
   cursor: pointer;
@@ -588,6 +752,7 @@ footer {
   transition: all 0.3s ease;
   position: relative;
   z-index: 1;
+  font-size: 16px;
 }
 
 .auth-tab.active {
@@ -664,6 +829,7 @@ footer {
   left: auto;
   right: 12px;
   cursor: pointer;
+  z-index: 5; /* Ensure it's clickable */
 }
 
 .input-with-icon input {
@@ -825,14 +991,16 @@ footer {
 }
 
 .booking-header h2 {
-  font-size: 24px;
+  font-size: 26px;
   margin-bottom: 10px;
+  color: var(--primary-color);
 }
 
 .booking-movie-details {
   display: flex;
   gap: 15px;
   color: var(--gray-color);
+  font-size: 15px;
 }
 
 /* Booking Steps Styles */
@@ -844,6 +1012,18 @@ footer {
   margin-bottom: 20px;
   padding-bottom: 10px;
   border-bottom: 1px solid var(--light-gray);
+  font-size: 20px;
+  position: relative;
+}
+
+.step h3:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 60px;
+  height: 3px;
+  background-color: var(--primary-color);
 }
 
 .date-selector {
@@ -852,22 +1032,40 @@ footer {
   overflow-x: auto;
   padding: 10px 0;
   margin-bottom: 30px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--light-gray);
+}
+
+.date-selector::-webkit-scrollbar {
+  height: 6px;
+}
+
+.date-selector::-webkit-scrollbar-track {
+  background: var(--light-gray);
+  border-radius: 3px;
+}
+
+.date-selector::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 3px;
 }
 
 .date-item {
-  flex: 0 0 100px;
+  flex: 0 0 110px;
   padding: 15px;
   border-radius: 8px;
   border: 1px solid var(--gray-color);
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition);
 }
 
 .date-item.active, .date-item:hover {
   background-color: var(--primary-color);
   color: var(--light-color);
   border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow);
 }
 
 .date-item .day {
@@ -886,6 +1084,8 @@ footer {
 
 .time-selector h4 {
   margin-bottom: 15px;
+  font-size: 18px;
+  color: var(--secondary-color);
 }
 
 .time-options {
@@ -901,13 +1101,16 @@ footer {
   border-radius: 4px;
   background-color: transparent;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition);
+  font-size: 14px;
 }
 
 .time-btn.active, .time-btn:hover {
   background-color: var(--primary-color);
   color: var(--light-color);
   border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow);
 }
 
 /* Seat Layout Styles */
@@ -916,14 +1119,33 @@ footer {
 }
 
 .screen {
-  height: 30px;
-  background-color: var(--light-gray);
+  height: 40px;
+  background: linear-gradient(to bottom, var(--light-gray), #e0e0e0);
   border-radius: 4px;
   margin: 0 30px 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.screen:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transform: skewX(-15deg);
+  animation: shine 3s infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 100%; }
 }
 
 .seating-info {
@@ -945,6 +1167,7 @@ footer {
   flex-direction: column;
   gap: 10px;
   margin-bottom: 20px;
+  perspective: 500px;
 }
 
 .seat-row {
@@ -955,33 +1178,51 @@ footer {
 .row-name {
   width: 30px;
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 15px;
 }
 
 .seats {
   display: flex;
   flex: 1;
-  gap: 5px;
+  gap: 8px;
   justify-content: center;
 }
 
 .seat {
-  width: 30px;
-  height: 30px;
-  border-radius: 4px;
+  width: 35px;
+  height: 35px;
+  border-radius: 8px 8px 0 0;
   background-color: var(--light-color);
   border: 1px solid var(--gray-color);
   cursor: pointer;
   transition: all 0.3s ease;
+  position: relative;
+}
+
+.seat:before {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--gray-color);
+  border-radius: 0 0 8px 8px;
 }
 
 .seat:hover {
   transform: scale(1.1);
+  background-color: rgba(232, 69, 69, 0.2);
 }
 
 .seat.selected {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
+}
+
+.seat.selected:before {
+  background-color: #d82c2c;
 }
 
 .seat.booked {
@@ -990,13 +1231,25 @@ footer {
   cursor: not-allowed;
 }
 
+.seat.booked:before {
+  background-color: var(--gray-color);
+}
+
 .seat.premium {
   border: 1px solid var(--premium-color);
+}
+
+.seat.premium:before {
+  background-color: var(--premium-color);
 }
 
 .seat.premium.selected {
   background-color: var(--premium-color);
   border-color: var(--premium-color);
+}
+
+.seat.premium.selected:before {
+  background-color: #c09a20;
 }
 
 .seats.premium {
@@ -1014,6 +1267,7 @@ footer {
   display: flex;
   align-items: center;
   gap: 10px;
+  font-size: 15px;
 }
 
 .seat-color {
@@ -1034,6 +1288,7 @@ footer {
   background-color: var(--light-gray);
   padding: 20px;
   border-radius: 8px;
+  font-size: 15px;
 }
 
 .seat-summary p {
@@ -1048,29 +1303,32 @@ footer {
   margin-top: 20px;
   padding-top: 10px;
   border-top: 1px dashed var(--gray-color);
+  color: var(--primary-color);
 }
 
 /* Payment Styles */
 .booking-summary {
   background-color: var(--light-gray);
-  padding: 20px;
-  border-radius: 8px;
+  padding: 25px;
+  border-radius: 10px;
   margin-bottom: 30px;
 }
 
 .booking-summary h4 {
-  margin-bottom: 15px;
+  margin-bottom: 20px;
+  font-size: 18px;
 }
 
 .summary-details {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .summary-item {
   display: flex;
   justify-content: space-between;
+  font-size: 15px;
 }
 
 .summary-item.total {
@@ -1079,10 +1337,12 @@ footer {
   margin-top: 15px;
   padding-top: 15px;
   border-top: 1px dashed var(--gray-color);
+  color: var(--primary-color);
 }
 
 .payment-options h4 {
   margin-bottom: 20px;
+  font-size: 18px;
 }
 
 .payment-methods {
@@ -1090,26 +1350,49 @@ footer {
   gap: 15px;
   margin-bottom: 30px;
   overflow-x: auto;
+  padding: 5px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--light-gray);
+}
+
+.payment-methods::-webkit-scrollbar {
+  height: 6px;
+}
+
+.payment-methods::-webkit-scrollbar-track {
+  background: var(--light-gray);
+  border-radius: 3px;
+}
+
+.payment-methods::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 3px;
 }
 
 .payment-method {
   flex: 0 0 150px;
-  padding: 15px;
+  padding: 20px 15px;
   border: 1px solid var(--gray-color);
-  border-radius: 8px;
+  border-radius: 10px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: var(--transition);
 }
 
 .payment-method.active, .payment-method:hover {
   border-color: var(--primary-color);
-  background-color: var(--light-gray);
+  background-color: rgba(232, 69, 69, 0.05);
 }
 
 .method-icon {
-  font-size: 24px;
+  font-size: 28px;
   margin-bottom: 10px;
+  color: var(--secondary-color);
+}
+
+.payment-method.active .method-icon,
+.payment-method:hover .method-icon {
+  color: var(--primary-color);
 }
 
 /* QR Code Container */
@@ -1118,13 +1401,21 @@ footer {
   gap: 30px;
   align-items: center;
   background-color: var(--light-color);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 20px;
   box-shadow: 0 5px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.qr-container img {
+  border: 5px solid var(--light-color);
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .qr-instructions h4 {
   margin-bottom: 15px;
+  font-size: 18px;
 }
 
 .qr-instructions ol {
@@ -1133,10 +1424,12 @@ footer {
 
 .qr-instructions ol li {
   margin-bottom: 10px;
+  font-size: 15px;
 }
 
 .qr-instructions ol li:last-child {
   font-weight: 500;
+  color: var(--primary-color);
 }
 
 /* Form Styles */
@@ -1146,16 +1439,25 @@ footer {
 
 .form-group label {
   display: block;
-  margin-bottom: 5px;
+  margin-bottom: 8px;
   font-weight: 500;
+  font-size: 15px;
 }
 
 .form-group input {
   width: 100%;
-  padding: 12px;
+  padding: 12px 15px;
   border: 1px solid var(--gray-color);
-  border-radius: 4px;
+  border-radius: 6px;
   font-family: 'Poppins', sans-serif;
+  font-size: 14px;
+  transition: var(--transition);
+}
+
+.form-group input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(232, 69, 69, 0.1);
 }
 
 .form-row {
@@ -1177,6 +1479,16 @@ footer {
   display: flex;
   align-items: center;
   gap: 10px;
+  padding: 10px;
+  border: 1px solid var(--light-gray);
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.bank-option:hover, .wallet-option:hover {
+  border-color: var(--primary-color);
+  background-color: rgba(232, 69, 69, 0.05);
 }
 
 /* Step Navigation */
@@ -1193,30 +1505,40 @@ footer {
 }
 
 .success-icon {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   background-color: #4CAF50;
   color: white;
   border-radius: 50%;
-  font-size: 30px;
+  font-size: 35px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 20px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(76, 175, 80, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
 }
 
 .booking-success h3 {
   margin-bottom: 10px;
+  font-size: 24px;
+  color: #4CAF50;
 }
 
 .booking-success p {
   margin-bottom: 30px;
+  font-size: 16px;
 }
 
 /* Ticket Styles */
 .ticket {
   background-color: var(--light-color);
-  border-radius: 8px;
+  border-radius: 15px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   margin: 0 auto 30px;
@@ -1225,19 +1547,26 @@ footer {
   display: flex;
   flex-direction: column;
   border: 2px dashed var(--primary-color);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
 }
 
 .ticket-header {
   background-color: var(--secondary-color);
   color: var(--light-color);
-  padding: 15px;
+  padding: 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
 .ticket-logo {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 600;
 }
 
@@ -1246,23 +1575,25 @@ footer {
 }
 
 .ticket-details {
-  padding: 20px;
+  padding: 25px;
 }
 
 .ticket-movie h4 {
-  font-size: 18px;
+  font-size: 22px;
   margin-bottom: 5px;
+  color: var(--secondary-color);
 }
 
 .ticket-movie p {
   color: var(--gray-color);
-  margin-bottom: 20px;
+  margin-bottom: 25px;
+  font-size: 15px;
 }
 
 .ticket-info {
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 20px;
 }
 
 .info-item {
@@ -1271,23 +1602,34 @@ footer {
 }
 
 .info-label {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--gray-color);
 }
 
 .info-value {
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--secondary-color);
 }
 
 .ticket-footer {
-  padding: 15px;
+  padding: 20px;
   background-color: var(--light-gray);
   text-align: center;
   border-top: 1px dashed var(--gray-color);
 }
 
+.ticket-footer img {
+  border: 5px solid var(--light-color);
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  margin-bottom: 10px;
+}
+
 .ticket-instructions {
   margin: 20px 0;
+  font-size: 15px;
+  text-align: center;
 }
 
 .ticket::before, .ticket::after {
@@ -1356,11 +1698,15 @@ footer {
   .movie-list {
     grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
+  
+  .hero-content h2 {
+    font-size: 40px;
+  }
 }
 
 @media (max-width: 768px) {
   .hero-content h2 {
-    font-size: 36px;
+    font-size: 32px;
   }
   
   .section-header {
@@ -1383,12 +1729,14 @@ footer {
     flex-direction: column;
   }
   
-  .payment-methods {
-    overflow-x: auto;
-  }
-  
   .auth-form {
     padding: 20px;
+  }
+  
+  .form-options {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
   }
   
   .social-signin p:before,
@@ -1404,10 +1752,19 @@ footer {
   
   nav ul {
     margin-top: 15px;
+    gap: 10px;
+  }
+  
+  nav ul li {
+    margin: 0 8px;
   }
   
   .hero-content h2 {
-    font-size: 30px;
+    font-size: 26px;
+  }
+  
+  .hero-content p {
+    font-size: 16px;
   }
   
   .movie-list {
@@ -1419,8 +1776,13 @@ footer {
   }
   
   .seat {
-    width: 25px;
-    height: 25px;
+    width: 28px;
+    height: 28px;
+  }
+  
+  .row-name {
+    width: 20px;
+    font-size: 12px;
   }
   
   .step-navigation {
@@ -1432,14 +1794,23 @@ footer {
     width: 100%;
   }
   
-  .form-options {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-  
   .social-signin p:before,
   .social-signin p:after {
     width: 15%;
   }
+  
+  .auth-tab {
+    padding: 15px 10px;
+    font-size: 14px;
+  }
+  
+  .ticket {
+    max-width: 100%;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
 }
+
