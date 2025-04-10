@@ -1,0 +1,137 @@
+
+/* Utility styles */
+
+/* Display */
+.d-none { display: none; }
+.d-inline { display: inline; }
+.d-inline-block { display: inline-block; }
+.d-block { display: block; }
+.d-flex { display: flex; }
+.d-inline-flex { display: inline-flex; }
+.d-grid { display: grid; }
+
+/* Visibility */
+.visible { visibility: visible; }
+.invisible { visibility: hidden; }
+
+/* Position */
+.position-static { position: static; }
+.position-relative { position: relative; }
+.position-absolute { position: absolute; }
+.position-fixed { position: fixed; }
+.position-sticky { position: sticky; }
+
+/* Top, right, bottom, left */
+.top-0 { top: 0; }
+.right-0 { right: 0; }
+.bottom-0 { bottom: 0; }
+.left-0 { left: 0; }
+
+/* Width and height */
+.w-25 { width: 25%; }
+.w-50 { width: 50%; }
+.w-75 { width: 75%; }
+.w-100 { width: 100%; }
+.w-auto { width: auto; }
+
+.h-25 { height: 25%; }
+.h-50 { height: 50%; }
+.h-75 { height: 75%; }
+.h-100 { height: 100%; }
+.h-auto { height: auto; }
+
+/* Text alignment */
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+.text-center { text-align: center; }
+.text-justify { text-align: justify; }
+
+/* Font weight */
+.font-light { font-weight: 300; }
+.font-normal { font-weight: 400; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+.font-bold { font-weight: 700; }
+
+/* Text color */
+.text-primary { color: var(--primary-color); }
+.text-secondary { color: var(--secondary-color); }
+.text-success { color: var(--success-color); }
+.text-danger { color: var(--danger-color); }
+.text-warning { color: var(--warning-color); }
+.text-info { color: var(--info-color); }
+.text-light { color: #f8f9fa; }
+.text-dark { color: #343a40; }
+.text-muted { color: #6c757d; }
+.text-white { color: white; }
+
+/* Background color */
+.bg-primary { background-color: var(--primary-color); }
+.bg-secondary { background-color: var(--secondary-color); }
+.bg-success { background-color: var(--success-color); }
+.bg-danger { background-color: var(--danger-color); }
+.bg-warning { background-color: var(--warning-color); }
+.bg-info { background-color: var(--info-color); }
+.bg-light { background-color: #f8f9fa; }
+.bg-dark { background-color: #343a40; }
+.bg-white { background-color: white; }
+.bg-transparent { background-color: transparent; }
+
+/* Border */
+.border { border: 1px solid var(--border-color); }
+.border-top { border-top: 1px solid var(--border-color); }
+.border-right { border-right: 1px solid var(--border-color); }
+.border-bottom { border-bottom: 1px solid var(--border-color); }
+.border-left { border-left: 1px solid var(--border-color); }
+
+.border-0 { border: 0; }
+.border-top-0 { border-top: 0; }
+.border-right-0 { border-right: 0; }
+.border-bottom-0 { border-bottom: 0; }
+.border-left-0 { border-left: 0; }
+
+/* Border radius */
+.rounded { border-radius: var(--radius-md); }
+.rounded-sm { border-radius: var(--radius-sm); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-circle { border-radius: 50%; }
+.rounded-pill { border-radius: 50rem; }
+.rounded-0 { border-radius: 0; }
+
+/* Shadows */
+.shadow-none { box-shadow: none; }
+.shadow-sm { box-shadow: var(--shadow-sm); }
+.shadow { box-shadow: var(--shadow-md); }
+.shadow-lg { box-shadow: var(--shadow-lg); }
+
+/* Overflow */
+.overflow-auto { overflow: auto; }
+.overflow-hidden { overflow: hidden; }
+.overflow-visible { overflow: visible; }
+.overflow-scroll { overflow: scroll; }
+.overflow-x-auto { overflow-x: auto; }
+.overflow-y-auto { overflow-y: auto; }
+.overflow-x-hidden { overflow-x: hidden; }
+.overflow-y-hidden { overflow-y: hidden; }
+
+/* Opacity */
+.opacity-0 { opacity: 0; }
+.opacity-25 { opacity: 0.25; }
+.opacity-50 { opacity: 0.5; }
+.opacity-75 { opacity: 0.75; }
+.opacity-100 { opacity: 1; }
+
+/* Glass morphism */
+.glass {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
