@@ -8,6 +8,15 @@ const Auth = (() => {
         setupSearch();
     };
     
+    const validateEmail = (email) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    };
+    
+    const validatePassword = (password) => {
+        return password.length >= 6;
+    };
+    
     const setupEventListeners = () => {
         // Sign In button functionality
         const signInBtn = document.getElementById('signInBtn');
@@ -107,13 +116,18 @@ const Auth = (() => {
                 const email = document.getElementById('signInEmail').value;
                 const password = document.getElementById('signInPassword').value;
                 
-                // Basic validation
+                // Enhanced validation
                 if (!email || !password) {
                     alert('Please fill in all fields');
                     return;
                 }
                 
-                // Mock sign in (simulated authentication)
+                if (!validateEmail(email)) {
+                    alert('Please enter a valid email address');
+                    return;
+                }
+                
+                // Get users from localStorage
                 const users = JSON.parse(localStorage.getItem('users') || '[]');
                 const user = users.find(u => u.email === email && u.password === password);
                 
@@ -127,7 +141,7 @@ const Auth = (() => {
                     }
                     
                     if (signInBtn) {
-                        signInBtn.textContent = 'My Account';
+                        signInBtn.textContent = `Welcome, ${user.name}`;
                     }
                     
                     // Save user info
@@ -150,9 +164,19 @@ const Auth = (() => {
                 const password = document.getElementById('signUpPassword')?.value;
                 const terms = document.getElementById('termsConditions')?.checked;
                 
-                // Basic validation
+                // Enhanced validation
                 if (!name || !email || !phone || !password) {
                     alert('Please fill in all fields');
+                    return;
+                }
+                
+                if (!validateEmail(email)) {
+                    alert('Please enter a valid email address');
+                    return;
+                }
+                
+                if (!validatePassword(password)) {
+                    alert('Password must be at least 6 characters long');
                     return;
                 }
                 
@@ -211,31 +235,64 @@ const Auth = (() => {
     // Ticket download functionality
     const downloadTicket = (ticketData) => {
         const ticketHTML = `
-            <div style="width: 800px; padding: 20px; border: 2px solid #333; font-family: Arial, sans-serif;">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <h1 style="color: #e84545;">CineVerse</h1>
-                    <div style="text-align: right;">
-                        <p><strong>Booking ID:</strong> ${ticketData.bookingId}</p>
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    body { font-family: Arial, sans-serif; }
+                    .ticket {
+                        width: 800px;
+                        padding: 20px;
+                        border: 2px solid #333;
+                        margin: 20px auto;
+                    }
+                    .ticket-header {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-bottom: 20px;
+                        border-bottom: 1px solid #ddd;
+                        padding-bottom: 10px;
+                    }
+                    .movie-title {
+                        font-size: 24px;
+                        color: #e84545;
+                        margin-bottom: 10px;
+                    }
+                    .ticket-info {
+                        margin: 15px 0;
+                    }
+                    .qr-code {
+                        text-align: center;
+                        margin-top: 20px;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="ticket">
+                    <div class="ticket-header">
+                        <h1>CineVerse</h1>
+                        <div>Booking ID: ${ticketData.bookingId}</div>
+                    </div>
+                    <div class="movie-title">${ticketData.movie}</div>
+                    <div class="ticket-info">
+                        <p><strong>Date & Time:</strong> ${ticketData.date}, ${ticketData.time}</p>
+                        <p><strong>Theatre:</strong> ${ticketData.theater}</p>
+                        <p><strong>Seats:</strong> ${ticketData.seats}</p>
+                    </div>
+                    <div class="qr-code">
+                        <img src="${ticketData.qrCode}" alt="Ticket QR Code" width="150" height="150">
+                        <p>Scan this QR code at the entrance</p>
                     </div>
                 </div>
-                <hr style="border: 1px solid #ddd;">
-                <h2 style="color: #333;">${ticketData.movie}</h2>
-                <div style="margin: 20px 0;">
-                    <p><strong>Date & Time:</strong> ${ticketData.date}, ${ticketData.time}</p>
-                    <p><strong>Theatre:</strong> ${ticketData.theater}</p>
-                    <p><strong>Seats:</strong> ${ticketData.seats}</p>
-                </div>
-                <div style="margin-top: 20px; text-align: center; font-size: 12px; color: #666;">
-                    <p>Present this ticket at the entrance. Enjoy your movie!</p>
-                </div>
-            </div>
+            </body>
+            </html>
         `;
 
         const blob = new Blob([ticketHTML], { type: 'text/html' });
         const downloadUrl = URL.createObjectURL(blob);
         const downloadLink = document.createElement('a');
         downloadLink.href = downloadUrl;
-        downloadLink.download = `ticket_${ticketData.bookingId}.html`;
+        downloadLink.download = `CineVerse_Ticket_${ticketData.bookingId}.html`;
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
