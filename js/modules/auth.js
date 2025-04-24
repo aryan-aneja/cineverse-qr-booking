@@ -1,4 +1,3 @@
-
 // Authentication module
 const Auth = (() => {
     let currentUser = null;
@@ -6,6 +5,7 @@ const Auth = (() => {
     // DOM elements
     const initAuthElements = () => {
         setupEventListeners();
+        setupSearch();
     };
     
     const setupEventListeners = () => {
@@ -113,20 +113,30 @@ const Auth = (() => {
                     return;
                 }
                 
-                // Mock sign in (in a real app, this would call an API)
-                alert('Sign in successful!');
-                if (signInModal) {
-                    signInModal.style.display = 'none';
-                    document.body.style.overflow = 'auto';
-                }
+                // Mock sign in (simulated authentication)
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const user = users.find(u => u.email === email && u.password === password);
                 
-                // Update UI to show logged in state (simplified for this example)
-                if (signInBtn) {
-                    signInBtn.textContent = 'My Account';
+                if (user) {
+                    const signInModal = document.getElementById('signInModal');
+                    const signInBtn = document.getElementById('signInBtn');
+                    
+                    if (signInModal) {
+                        signInModal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                    
+                    if (signInBtn) {
+                        signInBtn.textContent = 'My Account';
+                    }
+                    
+                    // Save user info
+                    currentUser = { email: user.email, name: user.name };
+                    localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    alert('Sign in successful!');
+                } else {
+                    alert('Invalid email or password');
                 }
-                
-                // Save user info
-                currentUser = { email };
             });
         }
         
@@ -151,24 +161,91 @@ const Auth = (() => {
                     return;
                 }
                 
-                // Mock sign up (in a real app, this would call an API)
-                alert('Account created successfully! Please check your email to verify your account.');
+                // Store user in localStorage
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
                 
-                // Switch to Sign In tab after successful signup
+                // Check if user already exists
+                if (users.some(user => user.email === email)) {
+                    alert('Email already registered');
+                    return;
+                }
+                
+                // Add new user
+                users.push({ name, email, phone, password });
+                localStorage.setItem('users', JSON.stringify(users));
+                
+                alert('Account created successfully! Please sign in.');
+                
+                // Switch to Sign In tab
                 const signInTab = document.querySelector('[data-tab="signIn"]');
                 if (signInTab) {
                     signInTab.click();
                 }
-                
-                // Save user info
-                currentUser = { name, email };
             });
         }
     };
     
+    // Setup search functionality
+    const setupSearch = () => {
+        const searchInput = document.getElementById('movieSearch');
+        if (searchInput) {
+            searchInput.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const movieCards = document.querySelectorAll('.movie-card');
+                
+                movieCards.forEach(card => {
+                    const title = card.querySelector('.movie-title')?.textContent.toLowerCase() || '';
+                    const genre = card.querySelector('.movie-genre')?.textContent.toLowerCase() || '';
+                    const language = card.querySelector('.movie-language')?.textContent.toLowerCase() || '';
+                    
+                    if (title.includes(searchTerm) || genre.includes(searchTerm) || language.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+    };
+    
+    // Ticket download functionality
+    const downloadTicket = (ticketData) => {
+        const ticketHTML = `
+            <div style="width: 800px; padding: 20px; border: 2px solid #333; font-family: Arial, sans-serif;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <h1 style="color: #e84545;">CineVerse</h1>
+                    <div style="text-align: right;">
+                        <p><strong>Booking ID:</strong> ${ticketData.bookingId}</p>
+                    </div>
+                </div>
+                <hr style="border: 1px solid #ddd;">
+                <h2 style="color: #333;">${ticketData.movie}</h2>
+                <div style="margin: 20px 0;">
+                    <p><strong>Date & Time:</strong> ${ticketData.date}, ${ticketData.time}</p>
+                    <p><strong>Theatre:</strong> ${ticketData.theater}</p>
+                    <p><strong>Seats:</strong> ${ticketData.seats}</p>
+                </div>
+                <div style="margin-top: 20px; text-align: center; font-size: 12px; color: #666;">
+                    <p>Present this ticket at the entrance. Enjoy your movie!</p>
+                </div>
+            </div>
+        `;
+
+        const blob = new Blob([ticketHTML], { type: 'text/html' });
+        const downloadUrl = URL.createObjectURL(blob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = downloadUrl;
+        downloadLink.download = `ticket_${ticketData.bookingId}.html`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        URL.revokeObjectURL(downloadUrl);
+    };
+    
     return {
         initAuthElements,
-        getCurrentUser: () => currentUser
+        getCurrentUser: () => currentUser,
+        downloadTicket
     };
 })();
 
