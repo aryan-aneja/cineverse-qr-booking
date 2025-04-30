@@ -1,11 +1,15 @@
+
 // Authentication module
 const Auth = (() => {
     let currentUser = null;
     
     // DOM elements
     const initAuthElements = () => {
-        setupEventListeners();
-        setupSearch();
+        // Initialize elements only after DOM is fully loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            setupEventListeners();
+            setupSearch();
+        });
     };
     
     const validateEmail = (email) => {
@@ -28,11 +32,164 @@ const Auth = (() => {
                 if (signInModal) {
                     signInModal.style.display = 'block';
                     document.body.style.overflow = 'hidden';
+                } else {
+                    // Create modal if it doesn't exist
+                    createSignInModal();
                 }
+            });
+        } else {
+            // Create button if it doesn't exist
+            createSignInButton();
+        }
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('signInModal');
+            if (e.target === modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        });
+        
+        // Setup auth tabs and other event listeners
+        setupAuthTabs();
+        setupPasswordToggle();
+        setupPasswordStrength();
+        setupFormSubmissions();
+    };
+    
+    const createSignInButton = () => {
+        const header = document.querySelector('header') || document.body.firstChild;
+        const signInBtn = document.createElement('button');
+        signInBtn.id = 'signInBtn';
+        signInBtn.className = 'btn btn-primary';
+        signInBtn.textContent = 'Sign In';
+        
+        // Check if user is already signed in
+        const savedUser = localStorage.getItem('currentUser');
+        if (savedUser) {
+            const user = JSON.parse(savedUser);
+            currentUser = user;
+            signInBtn.textContent = `Welcome, ${user.name}`;
+        }
+        
+        // Add button to header or body
+        if (header) {
+            const nav = header.querySelector('nav') || header;
+            nav.appendChild(signInBtn);
+        } else {
+            // Create a simple header if none exists
+            const newHeader = document.createElement('header');
+            newHeader.className = 'site-header';
+            newHeader.appendChild(signInBtn);
+            document.body.insertBefore(newHeader, document.body.firstChild);
+        }
+        
+        // Attach event listener
+        signInBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const modal = document.getElementById('signInModal');
+            if (modal) {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            } else {
+                createSignInModal();
+            }
+        });
+    };
+    
+    const createSignInModal = () => {
+        const modal = document.createElement('div');
+        modal.id = 'signInModal';
+        modal.className = 'modal';
+        
+        modal.innerHTML = `
+            <div class="modal-content auth-modal">
+                <span class="close">&times;</span>
+                <div class="auth-tabs">
+                    <button class="auth-tab active" data-tab="signIn">Sign In</button>
+                    <button class="auth-tab" data-tab="signUp">Sign Up</button>
+                </div>
+                
+                <div class="auth-forms">
+                    <form id="signInForm" class="auth-form active">
+                        <div class="form-group">
+                            <label for="signInEmail">Email Address</label>
+                            <input type="email" id="signInEmail" required placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="signInPassword">Password</label>
+                            <div class="password-input">
+                                <input type="password" id="signInPassword" required placeholder="Enter your password">
+                                <i class="toggle-password fa fa-eye"></i>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block">Sign In</button>
+                        </div>
+                    </form>
+                    
+                    <form id="signUpForm" class="auth-form">
+                        <div class="form-group">
+                            <label for="signUpName">Full Name</label>
+                            <input type="text" id="signUpName" required placeholder="Enter your name">
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpEmail">Email Address</label>
+                            <input type="email" id="signUpEmail" required placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpPhone">Phone Number</label>
+                            <input type="tel" id="signUpPhone" required placeholder="Enter your phone number">
+                        </div>
+                        <div class="form-group">
+                            <label for="signUpPassword">Password</label>
+                            <div class="password-input">
+                                <input type="password" id="signUpPassword" required placeholder="Create a password">
+                                <i class="toggle-password fa fa-eye"></i>
+                            </div>
+                            <div class="password-strength-meter">
+                                <div class="strength-bar">
+                                    <div id="passwordStrength" class="strength-bar-progress"></div>
+                                </div>
+                                <span id="strengthText" class="strength-text">Weak</span>
+                            </div>
+                        </div>
+                        <div class="form-group checkbox-group">
+                            <input type="checkbox" id="termsConditions">
+                            <label for="termsConditions">I agree to the Terms & Conditions</label>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Add close button functionality
+        const closeBtn = modal.querySelector('.close');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', function() {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
             });
         }
         
-        // Auth tabs functionality
+        // Setup the tabs and form submissions for the new modal
+        setupAuthTabs();
+        setupPasswordToggle();
+        setupPasswordStrength();
+        setupFormSubmissions();
+        
+        // Show the modal
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+    };
+    
+    const setupAuthTabs = () => {
         const authTabs = document.querySelectorAll('.auth-tab');
         const authForms = document.querySelectorAll('.auth-form');
         
@@ -56,7 +213,9 @@ const Auth = (() => {
                 }
             });
         });
-        
+    };
+    
+    const setupPasswordToggle = () => {
         // Toggle password visibility
         const togglePasswordButtons = document.querySelectorAll('.toggle-password');
         togglePasswordButtons.forEach(button => {
@@ -72,7 +231,9 @@ const Auth = (() => {
                 }
             });
         });
-        
+    };
+    
+    const setupPasswordStrength = () => {
         // Password strength meter
         const signUpPasswordInput = document.getElementById('signUpPassword');
         if (signUpPasswordInput) {
@@ -107,7 +268,9 @@ const Auth = (() => {
                 }
             });
         }
-
+    };
+    
+    const setupFormSubmissions = () => {
         // Form Submissions with validation
         const signInForm = document.getElementById('signInForm');
         if (signInForm) {
@@ -211,11 +374,22 @@ const Auth = (() => {
     
     // Setup search functionality
     const setupSearch = () => {
-        const searchInput = document.getElementById('movieSearch');
+        // First, check if search exists, if not create it
+        let searchInput = document.getElementById('movieSearch');
+        if (!searchInput) {
+            createSearchBar();
+            searchInput = document.getElementById('movieSearch');
+        }
+        
         if (searchInput) {
             searchInput.addEventListener('input', function(e) {
                 const searchTerm = e.target.value.toLowerCase();
                 const movieCards = document.querySelectorAll('.movie-card');
+                
+                if (movieCards.length === 0) {
+                    console.log('No movie cards found to search');
+                    return;
+                }
                 
                 movieCards.forEach(card => {
                     const title = card.querySelector('.movie-title')?.textContent.toLowerCase() || '';
@@ -232,8 +406,37 @@ const Auth = (() => {
         }
     };
     
+    // Create a search bar if it doesn't exist
+    const createSearchBar = () => {
+        const mainSection = document.querySelector('main') || document.body;
+        const existingSearch = document.getElementById('movieSearch');
+        
+        if (!existingSearch) {
+            const searchContainer = document.createElement('div');
+            searchContainer.className = 'search-container';
+            searchContainer.innerHTML = `
+                <div class="search-wrapper">
+                    <input type="text" id="movieSearch" placeholder="Search for movies by title, genre, or language">
+                    <button class="search-btn">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </div>
+            `;
+            
+            // Insert before the first child or append
+            if (mainSection.firstChild) {
+                mainSection.insertBefore(searchContainer, mainSection.firstChild);
+            } else {
+                mainSection.appendChild(searchContainer);
+            }
+        }
+    };
+    
     // Ticket download functionality
     const downloadTicket = (ticketData) => {
+        // Create a mock QR code if not provided
+        const qrCode = ticketData.qrCode || "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
+        
         const ticketHTML = `
             <!DOCTYPE html>
             <html>
@@ -280,7 +483,7 @@ const Auth = (() => {
                         <p><strong>Seats:</strong> ${ticketData.seats}</p>
                     </div>
                     <div class="qr-code">
-                        <img src="${ticketData.qrCode}" alt="Ticket QR Code" width="150" height="150">
+                        <img src="${qrCode}" alt="Ticket QR Code" width="150" height="150">
                         <p>Scan this QR code at the entrance</p>
                     </div>
                 </div>
@@ -298,6 +501,183 @@ const Auth = (() => {
         document.body.removeChild(downloadLink);
         URL.revokeObjectURL(downloadUrl);
     };
+    
+    // Add some CSS for auth modal and search
+    const addStyles = () => {
+        const styleElement = document.createElement('style');
+        styleElement.textContent = `
+            .modal {
+                display: none;
+                position: fixed;
+                z-index: 1000;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                overflow: auto;
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+            
+            .modal-content {
+                background-color: #fff;
+                margin: 10% auto;
+                padding: 20px;
+                border-radius: 5px;
+                width: 90%;
+                max-width: 500px;
+                position: relative;
+            }
+            
+            .close {
+                position: absolute;
+                right: 20px;
+                top: 10px;
+                font-size: 28px;
+                font-weight: bold;
+                cursor: pointer;
+            }
+            
+            .auth-tabs {
+                display: flex;
+                margin-bottom: 20px;
+                border-bottom: 1px solid #ddd;
+            }
+            
+            .auth-tab {
+                padding: 10px 20px;
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 16px;
+                opacity: 0.7;
+            }
+            
+            .auth-tab.active {
+                opacity: 1;
+                border-bottom: 2px solid #9b87f5;
+            }
+            
+            .auth-form {
+                display: none;
+            }
+            
+            .auth-form.active {
+                display: block;
+            }
+            
+            .form-group {
+                margin-bottom: 15px;
+            }
+            
+            .form-group label {
+                display: block;
+                margin-bottom: 5px;
+                font-weight: 500;
+            }
+            
+            .form-group input {
+                width: 100%;
+                padding: 10px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
+            
+            .password-input {
+                position: relative;
+            }
+            
+            .toggle-password {
+                position: absolute;
+                right: 10px;
+                top: 10px;
+                cursor: pointer;
+            }
+            
+            .btn {
+                padding: 10px 15px;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+            
+            .btn-primary {
+                background-color: #9b87f5;
+                color: white;
+            }
+            
+            .btn-block {
+                width: 100%;
+            }
+            
+            .checkbox-group {
+                display: flex;
+                align-items: center;
+            }
+            
+            .checkbox-group input {
+                width: auto;
+                margin-right: 10px;
+            }
+            
+            .password-strength-meter {
+                margin-top: 5px;
+            }
+            
+            .strength-bar {
+                height: 5px;
+                background-color: #eee;
+                border-radius: 3px;
+                margin-bottom: 5px;
+            }
+            
+            .strength-bar-progress {
+                height: 100%;
+                width: 0;
+                border-radius: 3px;
+                transition: width 0.3s, background-color 0.3s;
+            }
+            
+            .search-container {
+                margin: 20px auto;
+                max-width: 800px;
+                padding: 0 15px;
+            }
+            
+            .search-wrapper {
+                display: flex;
+                position: relative;
+            }
+            
+            #movieSearch {
+                width: 100%;
+                padding: 12px 50px 12px 15px;
+                border: 2px solid #9b87f5;
+                border-radius: 25px;
+                font-size: 16px;
+            }
+            
+            .search-btn {
+                position: absolute;
+                right: 5px;
+                top: 5px;
+                background-color: #9b87f5;
+                color: white;
+                border: none;
+                border-radius: 50%;
+                width: 35px;
+                height: 35px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        `;
+        
+        document.head.appendChild(styleElement);
+    };
+    
+    // Initialize
+    addStyles();
     
     return {
         initAuthElements,
