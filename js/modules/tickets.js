@@ -34,7 +34,7 @@ const Tickets = (() => {
 
     // Save tickets to localStorage
     const saveTicket = (bookingId) => {
-        const encodedBookingId = encodeURIComponent(bookingId);
+        const safeBookingId = encodeURIComponent(bookingId);
         const ticket = {
             bookingId: bookingId,
             movie: selectedMovie,
@@ -43,7 +43,7 @@ const Tickets = (() => {
             theater: selectedTheater,
             location: currentLocation,
             seats: selectedSeats.map(seat => seat.id).join(', '),
-            qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodedBookingId}_CINEVERSE_TICKET`
+            qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${safeBookingId}_CINEVERSE_TICKET`
         };
         
         bookedTickets.push(ticket);
@@ -61,7 +61,7 @@ const Tickets = (() => {
         const ticket = bookedTickets.find(t => t.bookingId === ticketId);
         if (!ticket) return;
 
-        const encodedBookingId = encodeURIComponent(ticket.bookingId);
+        const safeBookingId = encodeURIComponent(ticket.bookingId);
 
         // Create a virtual ticket for download
         const ticketHTML = `
@@ -70,7 +70,7 @@ const Tickets = (() => {
                     <h1 style="color:#e84545;">CineVerse</h1>
                     <div style="text-align:right;">
                         <p><strong>Booking ID:</strong> ${ticket.bookingId}</p>
-                        <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodedBookingId}`}" alt="Ticket QR Code" width="100" height="100">
+                        <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${safeBookingId}`}" alt="Ticket QR Code" width="100" height="100">
                     </div>
                 </div>
                 <hr style="border:1px solid #ddd;">
@@ -88,16 +88,20 @@ const Tickets = (() => {
             </div>
         `;
 
-        // Create a data URL from HTML - using encodeURIComponent to properly handle special characters
-        const ticketData = 'data:text/html;charset=utf-8,' + encodeURIComponent(ticketHTML);
+        // Use Blob and URL.createObjectURL instead of data URL
+        const blob = new Blob([ticketHTML], { type: 'text/html' });
+        const downloadUrl = URL.createObjectURL(blob);
         
         // Create an anchor and trigger the download
         const downloadLink = document.createElement('a');
-        downloadLink.href = ticketData;
-        downloadLink.download = `CineVerse_Ticket_${encodedBookingId}.html`;
+        downloadLink.href = downloadUrl;
+        downloadLink.download = `CineVerse_Ticket_${safeBookingId}.html`;
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
+        
+        // Clean up the URL object
+        URL.revokeObjectURL(downloadUrl);
     };
 
     // Render tickets list HTML
@@ -108,7 +112,7 @@ const Tickets = (() => {
         }
         
         bookedTickets.forEach(ticket => {
-            const encodedBookingId = encodeURIComponent(ticket.bookingId);
+            const safeBookingId = encodeURIComponent(ticket.bookingId);
             html += `
                 <div class="ticket-item">
                     <div class="ticket-details">
@@ -118,7 +122,7 @@ const Tickets = (() => {
                         <p><strong>Seats:</strong> ${ticket.seats}</p>
                         <p><strong>Booking ID:</strong> ${ticket.bookingId}</p>
                         <div class="ticket-qr">
-                            <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodedBookingId}`}" alt="Ticket QR Code" width="80" height="80">
+                            <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${safeBookingId}`}" alt="Ticket QR Code" width="80" height="80">
                         </div>
                     </div>
                     <button class="download-ticket" data-ticket-id="${ticket.bookingId}">

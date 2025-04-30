@@ -33,6 +33,12 @@ const Auth = (() => {
         if (signInBtn) {
             signInBtn.textContent = `Welcome, ${currentUser.name}`;
             
+            // Remove existing logout button if it exists
+            const existingLogoutBtn = document.getElementById('logoutBtn');
+            if (existingLogoutBtn) {
+                existingLogoutBtn.remove();
+            }
+            
             // Add logout option
             const logoutBtn = document.createElement('button');
             logoutBtn.id = 'logoutBtn';
@@ -107,12 +113,6 @@ const Auth = (() => {
                 document.body.style.overflow = 'auto';
             }
         });
-        
-        // Setup auth tabs and other event listeners
-        setupAuthTabs();
-        setupPasswordToggle();
-        setupPasswordStrength();
-        setupFormSubmissions();
     };
     
     const createSignInButton = () => {
@@ -179,6 +179,12 @@ const Auth = (() => {
     };
     
     const createSignInModal = () => {
+        // Remove existing modal if it exists
+        const existingModal = document.getElementById('signInModal');
+        if (existingModal) {
+            existingModal.remove();
+        }
+        
         const modal = document.createElement('div');
         modal.id = 'signInModal';
         modal.className = 'modal';
@@ -260,7 +266,7 @@ const Auth = (() => {
             });
         }
         
-        // Setup the tabs and form submissions for the new modal
+        // Setup the auth tabs, password toggles, and form submissions for the new modal
         setupAuthTabs();
         setupPasswordToggle();
         setupPasswordStrength();
@@ -385,7 +391,6 @@ const Auth = (() => {
                 
                 if (user) {
                     const signInModal = document.getElementById('signInModal');
-                    const signInBtn = document.getElementById('signInBtn');
                     
                     if (signInModal) {
                         signInModal.style.display = 'none';
@@ -725,8 +730,8 @@ const Auth = (() => {
         getCurrentUser: () => currentUser,
         downloadTicket: (ticketData) => {
             // Create a mock QR code if not provided
-            const encodedBookingId = encodeURIComponent(ticketData.bookingId);
-            const qrCode = ticketData.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodedBookingId}`;
+            const safeBookingId = encodeURIComponent(ticketData.bookingId);
+            const qrCode = ticketData.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${safeBookingId}`;
             
             const ticketHTML = `
                 <!DOCTYPE html>
@@ -786,7 +791,7 @@ const Auth = (() => {
             const downloadUrl = URL.createObjectURL(blob);
             const downloadLink = document.createElement('a');
             downloadLink.href = downloadUrl;
-            downloadLink.download = `CineVerse_Ticket_${ticketData.bookingId}.html`;
+            downloadLink.download = `CineVerse_Ticket_${safeBookingId}.html`;
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
