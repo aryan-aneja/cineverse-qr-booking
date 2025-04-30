@@ -7,9 +7,61 @@ const Auth = (() => {
     const initAuthElements = () => {
         // Initialize elements only after DOM is fully loaded
         document.addEventListener('DOMContentLoaded', () => {
+            checkExistingUser();
             setupEventListeners();
             setupSearch();
         });
+    };
+    
+    // Check if a user is already logged in
+    const checkExistingUser = () => {
+        try {
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                updateUIForLoggedInUser();
+            }
+        } catch (e) {
+            console.error('Error checking existing user:', e);
+        }
+    };
+    
+    const updateUIForLoggedInUser = () => {
+        if (!currentUser) return;
+        
+        const signInBtn = document.getElementById('signInBtn');
+        if (signInBtn) {
+            signInBtn.textContent = `Welcome, ${currentUser.name}`;
+            
+            // Add logout option
+            const logoutBtn = document.createElement('button');
+            logoutBtn.id = 'logoutBtn';
+            logoutBtn.className = 'btn btn-outline';
+            logoutBtn.textContent = 'Logout';
+            logoutBtn.addEventListener('click', logout);
+            
+            // Insert logout button after sign in button
+            signInBtn.parentNode.insertBefore(logoutBtn, signInBtn.nextSibling);
+        }
+    };
+    
+    const logout = () => {
+        localStorage.removeItem('currentUser');
+        currentUser = null;
+        
+        // Update UI
+        const signInBtn = document.getElementById('signInBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        
+        if (signInBtn) {
+            signInBtn.textContent = 'Sign In';
+        }
+        
+        if (logoutBtn) {
+            logoutBtn.remove();
+        }
+        
+        alert('You have been logged out.');
     };
     
     const validateEmail = (email) => {
@@ -29,6 +81,11 @@ const Auth = (() => {
         if (signInBtn) {
             signInBtn.addEventListener('click', function(e) {
                 e.preventDefault();
+                if (currentUser) {
+                    // User is already signed in, do nothing or show profile
+                    return;
+                }
+                
                 if (signInModal) {
                     signInModal.style.display = 'block';
                     document.body.style.overflow = 'hidden';
@@ -66,28 +123,51 @@ const Auth = (() => {
         signInBtn.textContent = 'Sign In';
         
         // Check if user is already signed in
-        const savedUser = localStorage.getItem('currentUser');
-        if (savedUser) {
-            const user = JSON.parse(savedUser);
-            currentUser = user;
-            signInBtn.textContent = `Welcome, ${user.name}`;
+        if (currentUser) {
+            signInBtn.textContent = `Welcome, ${currentUser.name}`;
         }
         
         // Add button to header or body
         if (header) {
             const nav = header.querySelector('nav') || header;
             nav.appendChild(signInBtn);
+            
+            // Add logout button if user is signed in
+            if (currentUser) {
+                const logoutBtn = document.createElement('button');
+                logoutBtn.id = 'logoutBtn';
+                logoutBtn.className = 'btn btn-outline';
+                logoutBtn.textContent = 'Logout';
+                logoutBtn.addEventListener('click', logout);
+                nav.appendChild(logoutBtn);
+            }
         } else {
             // Create a simple header if none exists
             const newHeader = document.createElement('header');
             newHeader.className = 'site-header';
             newHeader.appendChild(signInBtn);
+            
+            // Add logout button if user is signed in
+            if (currentUser) {
+                const logoutBtn = document.createElement('button');
+                logoutBtn.id = 'logoutBtn';
+                logoutBtn.className = 'btn btn-outline';
+                logoutBtn.textContent = 'Logout';
+                logoutBtn.addEventListener('click', logout);
+                newHeader.appendChild(logoutBtn);
+            }
+            
             document.body.insertBefore(newHeader, document.body.firstChild);
         }
         
         // Attach event listener
         signInBtn.addEventListener('click', function(e) {
             e.preventDefault();
+            if (currentUser) {
+                // User is already signed in, do nothing or show profile
+                return;
+            }
+            
             const modal = document.getElementById('signInModal');
             if (modal) {
                 modal.style.display = 'block';
@@ -127,6 +207,7 @@ const Auth = (() => {
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-block">Sign In</button>
                         </div>
+                        <div class="form-error" id="signInError"></div>
                     </form>
                     
                     <form id="signUpForm" class="auth-form">
@@ -162,6 +243,7 @@ const Auth = (() => {
                         <div class="form-group">
                             <button type="submit" class="btn btn-primary btn-block">Create Account</button>
                         </div>
+                        <div class="form-error" id="signUpError"></div>
                     </form>
                 </div>
             </div>
@@ -219,6 +301,8 @@ const Auth = (() => {
         // Toggle password visibility
         const togglePasswordButtons = document.querySelectorAll('.toggle-password');
         togglePasswordButtons.forEach(button => {
+            if (!button) return;
+            
             button.addEventListener('click', function() {
                 const passwordInput = this.previousElementSibling;
                 if (passwordInput) {
@@ -276,17 +360,22 @@ const Auth = (() => {
         if (signInForm) {
             signInForm.addEventListener('submit', function(e) {
                 e.preventDefault();
-                const email = document.getElementById('signInEmail').value;
-                const password = document.getElementById('signInPassword').value;
+                
+                // Clear previous errors
+                const errorEl = document.getElementById('signInError');
+                if (errorEl) errorEl.textContent = '';
+                
+                const email = document.getElementById('signInEmail')?.value;
+                const password = document.getElementById('signInPassword')?.value;
                 
                 // Enhanced validation
                 if (!email || !password) {
-                    alert('Please fill in all fields');
+                    if (errorEl) errorEl.textContent = 'Please fill in all fields';
                     return;
                 }
                 
                 if (!validateEmail(email)) {
-                    alert('Please enter a valid email address');
+                    if (errorEl) errorEl.textContent = 'Please enter a valid email address';
                     return;
                 }
                 
@@ -303,16 +392,16 @@ const Auth = (() => {
                         document.body.style.overflow = 'auto';
                     }
                     
-                    if (signInBtn) {
-                        signInBtn.textContent = `Welcome, ${user.name}`;
-                    }
-                    
                     // Save user info
                     currentUser = { email: user.email, name: user.name };
                     localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                    
+                    // Update UI
+                    updateUIForLoggedInUser();
+                    
                     alert('Sign in successful!');
                 } else {
-                    alert('Invalid email or password');
+                    if (errorEl) errorEl.textContent = 'Invalid email or password';
                 }
             });
         }
@@ -321,6 +410,11 @@ const Auth = (() => {
         if (signUpForm) {
             signUpForm.addEventListener('submit', function(e) {
                 e.preventDefault();
+                
+                // Clear previous errors
+                const errorEl = document.getElementById('signUpError');
+                if (errorEl) errorEl.textContent = '';
+                
                 const name = document.getElementById('signUpName')?.value;
                 const email = document.getElementById('signUpEmail')?.value;
                 const phone = document.getElementById('signUpPhone')?.value;
@@ -329,22 +423,22 @@ const Auth = (() => {
                 
                 // Enhanced validation
                 if (!name || !email || !phone || !password) {
-                    alert('Please fill in all fields');
+                    if (errorEl) errorEl.textContent = 'Please fill in all fields';
                     return;
                 }
                 
                 if (!validateEmail(email)) {
-                    alert('Please enter a valid email address');
+                    if (errorEl) errorEl.textContent = 'Please enter a valid email address';
                     return;
                 }
                 
                 if (!validatePassword(password)) {
-                    alert('Password must be at least 6 characters long');
+                    if (errorEl) errorEl.textContent = 'Password must be at least 6 characters long';
                     return;
                 }
                 
                 if (!terms) {
-                    alert('Please agree to the Terms & Conditions');
+                    if (errorEl) errorEl.textContent = 'Please agree to the Terms & Conditions';
                     return;
                 }
                 
@@ -353,7 +447,7 @@ const Auth = (() => {
                 
                 // Check if user already exists
                 if (users.some(user => user.email === email)) {
-                    alert('Email already registered');
+                    if (errorEl) errorEl.textContent = 'Email already registered';
                     return;
                 }
                 
@@ -432,79 +526,13 @@ const Auth = (() => {
         }
     };
     
-    // Ticket download functionality
-    const downloadTicket = (ticketData) => {
-        // Create a mock QR code if not provided
-        const qrCode = ticketData.qrCode || "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==";
-        
-        const ticketHTML = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <style>
-                    body { font-family: Arial, sans-serif; }
-                    .ticket {
-                        width: 800px;
-                        padding: 20px;
-                        border: 2px solid #333;
-                        margin: 20px auto;
-                    }
-                    .ticket-header {
-                        display: flex;
-                        justify-content: space-between;
-                        margin-bottom: 20px;
-                        border-bottom: 1px solid #ddd;
-                        padding-bottom: 10px;
-                    }
-                    .movie-title {
-                        font-size: 24px;
-                        color: #e84545;
-                        margin-bottom: 10px;
-                    }
-                    .ticket-info {
-                        margin: 15px 0;
-                    }
-                    .qr-code {
-                        text-align: center;
-                        margin-top: 20px;
-                    }
-                </style>
-            </head>
-            <body>
-                <div class="ticket">
-                    <div class="ticket-header">
-                        <h1>CineVerse</h1>
-                        <div>Booking ID: ${ticketData.bookingId}</div>
-                    </div>
-                    <div class="movie-title">${ticketData.movie}</div>
-                    <div class="ticket-info">
-                        <p><strong>Date & Time:</strong> ${ticketData.date}, ${ticketData.time}</p>
-                        <p><strong>Theatre:</strong> ${ticketData.theater}</p>
-                        <p><strong>Seats:</strong> ${ticketData.seats}</p>
-                    </div>
-                    <div class="qr-code">
-                        <img src="${qrCode}" alt="Ticket QR Code" width="150" height="150">
-                        <p>Scan this QR code at the entrance</p>
-                    </div>
-                </div>
-            </body>
-            </html>
-        `;
-
-        const blob = new Blob([ticketHTML], { type: 'text/html' });
-        const downloadUrl = URL.createObjectURL(blob);
-        const downloadLink = document.createElement('a');
-        downloadLink.href = downloadUrl;
-        downloadLink.download = `CineVerse_Ticket_${ticketData.bookingId}.html`;
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-        URL.revokeObjectURL(downloadUrl);
-    };
-    
-    // Add some CSS for auth modal and search
+    // Additional styles for error messages
     const addStyles = () => {
+        const existingStyle = document.getElementById('auth-styles');
+        if (existingStyle) return;
+        
         const styleElement = document.createElement('style');
+        styleElement.id = 'auth-styles';
         styleElement.textContent = `
             .modal {
                 display: none;
@@ -605,6 +633,13 @@ const Auth = (() => {
                 color: white;
             }
             
+            .btn-outline {
+                background-color: transparent;
+                border: 1px solid #9b87f5;
+                color: #9b87f5;
+                margin-left: 10px;
+            }
+            
             .btn-block {
                 width: 100%;
             }
@@ -671,6 +706,12 @@ const Auth = (() => {
                 align-items: center;
                 justify-content: center;
             }
+            
+            .form-error {
+                color: #e74c3c;
+                margin-top: 10px;
+                font-size: 14px;
+            }
         `;
         
         document.head.appendChild(styleElement);
@@ -682,7 +723,75 @@ const Auth = (() => {
     return {
         initAuthElements,
         getCurrentUser: () => currentUser,
-        downloadTicket
+        downloadTicket: (ticketData) => {
+            // Create a mock QR code if not provided
+            const encodedBookingId = encodeURIComponent(ticketData.bookingId);
+            const qrCode = ticketData.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodedBookingId}`;
+            
+            const ticketHTML = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        body { font-family: Arial, sans-serif; }
+                        .ticket {
+                            width: 800px;
+                            padding: 20px;
+                            border: 2px solid #333;
+                            margin: 20px auto;
+                        }
+                        .ticket-header {
+                            display: flex;
+                            justify-content: space-between;
+                            margin-bottom: 20px;
+                            border-bottom: 1px solid #ddd;
+                            padding-bottom: 10px;
+                        }
+                        .movie-title {
+                            font-size: 24px;
+                            color: #e84545;
+                            margin-bottom: 10px;
+                        }
+                        .ticket-info {
+                            margin: 15px 0;
+                        }
+                        .qr-code {
+                            text-align: center;
+                            margin-top: 20px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="ticket">
+                        <div class="ticket-header">
+                            <h1>CineVerse</h1>
+                            <div>Booking ID: ${ticketData.bookingId}</div>
+                        </div>
+                        <div class="movie-title">${ticketData.movie}</div>
+                        <div class="ticket-info">
+                            <p><strong>Date & Time:</strong> ${ticketData.date}, ${ticketData.time}</p>
+                            <p><strong>Theatre:</strong> ${ticketData.theater}</p>
+                            <p><strong>Seats:</strong> ${ticketData.seats}</p>
+                        </div>
+                        <div class="qr-code">
+                            <img src="${qrCode}" alt="Ticket QR Code" width="150" height="150">
+                            <p>Scan this QR code at the entrance</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `;
+    
+            const blob = new Blob([ticketHTML], { type: 'text/html' });
+            const downloadUrl = URL.createObjectURL(blob);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = downloadUrl;
+            downloadLink.download = `CineVerse_Ticket_${ticketData.bookingId}.html`;
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            document.body.removeChild(downloadLink);
+            URL.revokeObjectURL(downloadUrl);
+        }
     };
 })();
 

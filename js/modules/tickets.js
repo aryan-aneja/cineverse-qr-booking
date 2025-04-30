@@ -34,6 +34,7 @@ const Tickets = (() => {
 
     // Save tickets to localStorage
     const saveTicket = (bookingId) => {
+        const encodedBookingId = encodeURIComponent(bookingId);
         const ticket = {
             bookingId: bookingId,
             movie: selectedMovie,
@@ -42,7 +43,7 @@ const Tickets = (() => {
             theater: selectedTheater,
             location: currentLocation,
             seats: selectedSeats.map(seat => seat.id).join(', '),
-            qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(bookingId)}_CINEVERSE_TICKET`
+            qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodedBookingId}_CINEVERSE_TICKET`
         };
         
         bookedTickets.push(ticket);
@@ -60,6 +61,8 @@ const Tickets = (() => {
         const ticket = bookedTickets.find(t => t.bookingId === ticketId);
         if (!ticket) return;
 
+        const encodedBookingId = encodeURIComponent(ticket.bookingId);
+
         // Create a virtual ticket for download
         const ticketHTML = `
             <div style="width:800px; padding:20px; border:2px solid #333; font-family:Arial, sans-serif;">
@@ -67,7 +70,7 @@ const Tickets = (() => {
                     <h1 style="color:#e84545;">CineVerse</h1>
                     <div style="text-align:right;">
                         <p><strong>Booking ID:</strong> ${ticket.bookingId}</p>
-                        <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(ticket.bookingId)}`}" alt="Ticket QR Code" width="100" height="100">
+                        <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodedBookingId}`}" alt="Ticket QR Code" width="100" height="100">
                     </div>
                 </div>
                 <hr style="border:1px solid #ddd;">
@@ -91,7 +94,7 @@ const Tickets = (() => {
         // Create an anchor and trigger the download
         const downloadLink = document.createElement('a');
         downloadLink.href = ticketData;
-        downloadLink.download = `CineVerse_Ticket_${ticket.bookingId}.html`;
+        downloadLink.download = `CineVerse_Ticket_${encodedBookingId}.html`;
         document.body.appendChild(downloadLink);
         downloadLink.click();
         document.body.removeChild(downloadLink);
@@ -105,6 +108,7 @@ const Tickets = (() => {
         }
         
         bookedTickets.forEach(ticket => {
+            const encodedBookingId = encodeURIComponent(ticket.bookingId);
             html += `
                 <div class="ticket-item">
                     <div class="ticket-details">
@@ -114,7 +118,7 @@ const Tickets = (() => {
                         <p><strong>Seats:</strong> ${ticket.seats}</p>
                         <p><strong>Booking ID:</strong> ${ticket.bookingId}</p>
                         <div class="ticket-qr">
-                            <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(ticket.bookingId)}`}" alt="Ticket QR Code" width="80" height="80">
+                            <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodedBookingId}`}" alt="Ticket QR Code" width="80" height="80">
                         </div>
                     </div>
                     <button class="download-ticket" data-ticket-id="${ticket.bookingId}">
