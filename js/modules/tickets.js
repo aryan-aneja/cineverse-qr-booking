@@ -42,7 +42,7 @@ const Tickets = (() => {
             theater: selectedTheater,
             location: currentLocation,
             seats: selectedSeats.map(seat => seat.id).join(', '),
-            qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${bookingId}_CINEVERSE_TICKET`
+            qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(bookingId)}_CINEVERSE_TICKET`
         };
         
         bookedTickets.push(ticket);
@@ -67,7 +67,7 @@ const Tickets = (() => {
                     <h1 style="color:#e84545;">CineVerse</h1>
                     <div style="text-align:right;">
                         <p><strong>Booking ID:</strong> ${ticket.bookingId}</p>
-                        <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${ticket.bookingId}`}" alt="Ticket QR Code" width="100" height="100">
+                        <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(ticket.bookingId)}`}" alt="Ticket QR Code" width="100" height="100">
                     </div>
                 </div>
                 <hr style="border:1px solid #ddd;">
@@ -85,7 +85,7 @@ const Tickets = (() => {
             </div>
         `;
 
-        // Create a data URL from HTML
+        // Create a data URL from HTML - using encodeURIComponent to properly handle special characters
         const ticketData = 'data:text/html;charset=utf-8,' + encodeURIComponent(ticketHTML);
         
         // Create an anchor and trigger the download
@@ -114,7 +114,7 @@ const Tickets = (() => {
                         <p><strong>Seats:</strong> ${ticket.seats}</p>
                         <p><strong>Booking ID:</strong> ${ticket.bookingId}</p>
                         <div class="ticket-qr">
-                            <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${ticket.bookingId}`}" alt="Ticket QR Code" width="80" height="80">
+                            <img src="${ticket.qrCode || `https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent(ticket.bookingId)}`}" alt="Ticket QR Code" width="80" height="80">
                         </div>
                     </div>
                     <button class="download-ticket" data-ticket-id="${ticket.bookingId}">
